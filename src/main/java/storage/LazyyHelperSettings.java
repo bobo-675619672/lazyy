@@ -1,10 +1,12 @@
 package storage;
 
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.rits.cloning.Cloner;
+import constant.LazyyConstant;
 import model.DataSettings;
 import model.TypeAlias;
 import org.jetbrains.annotations.NotNull;
@@ -52,14 +54,6 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
         this.dataSettings = dateSettings;
     }
 
-    public void updateTemplate(String template) {
-        dataSettings.setTemplate(template);
-    }
-
-    public void updateTypeMap(List<TypeAlias> typeAliases) {
-        dataSettings.setTypeAliases(typeAliases);
-    }
-
     @Override
     public LazyyHelperSettings clone() {
         Cloner cloner = new Cloner();
@@ -73,10 +67,12 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
     private void loadDefaultSettings() {
         dataSettings = new DataSettings();
         try {
-            dataSettings.setTemplate("--");
-            dataSettings.setHidenMoney(true);
             List<TypeAlias> typeAliases = new LinkedList<>();
             dataSettings.setTypeAliases(typeAliases);
+            PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_TIME, "10");
+            PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_HIDENMINEY, true);
+//            dataSettings.setHidenMoney(true);
+//            dataSettings.setTime("1");
         } catch (Exception e) {
             e.printStackTrace();
         }

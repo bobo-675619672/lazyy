@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.dw'
-version '1.0.2'
+version '1.0.4'
 
 sourceCompatibility = 1.8
 
@@ -28,7 +28,7 @@ intellij {
 
 patchPluginXml {
     changeNotes """
-        v1.0.2 第二个demo版本  <br>
+        v1.0.4 第四个demo版本  <br>
       """
     sinceBuild '173.*'
     untilBuild '202.*'

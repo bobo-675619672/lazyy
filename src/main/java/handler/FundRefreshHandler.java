@@ -1,5 +1,7 @@
 package handler;
 
+import com.intellij.ide.util.PropertiesComponent;
+import constant.LazyyConstant;
 import model.FundBean;
 import com.intellij.ui.JBColor;
 import model.TypeAlias;
@@ -10,11 +12,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
 
 public abstract class FundRefreshHandler {
+
+    public static Set<String> init_set = new HashSet<>();
+
     private ArrayList<FundBean> data = new ArrayList<>();
     private JTable table;
     private JLabel label1;
@@ -35,7 +39,6 @@ public abstract class FundRefreshHandler {
 
     /**
      * 从网络更新数据
-     *
      * @param code
      */
     public abstract void handle(List<TypeAlias> code);
@@ -132,6 +135,11 @@ public abstract class FundRefreshHandler {
     }
 
     protected void updateShaLabel(String[] sha) {
+        // 当天还没开始
+        if (getStartDate().after(new Date())) {
+            label2.setText(getCurDateStr() + "(赌场还没开门)");
+            return;
+        }
         // [上证指数,3317.9847,40.5445,1.24,1822997,25641104]
         String name = sha[0];
         String index1 = sha[1];
@@ -149,10 +157,18 @@ public abstract class FundRefreshHandler {
         // 3317.9847 (↑40.5445 / +1.24%)
         String show = String.format("%s (%s%s / %s%s%%)", index1, code2, index2, code3, index3);
         label1.setText(show);
-        label2.setText(getCurDateStr());
+        // 当天已经结束
+        if (getEndDate().before(new Date())) {
+            label2.setText(getCurDayStr() + " " + LazyyConstant.TIME_ENT + "(赌场已经关门)");
+        } else {
+            label2.setText(getCurDateStr());
+        }
     }
 
     private Object[][] convertData() {
+        // 隐藏收益
+        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDENMINEY);
+
         Object[][] temp = new Object[data.size()][];
         for (int i = 0; i < data.size(); i++) {
             FundBean fundBean = data.get(i);
@@ -169,7 +185,7 @@ public abstract class FundRefreshHandler {
                 gszzlStr= fundBean.getGszzl().startsWith("-") ? fundBean.getGszzl() : "+" + fundBean.getGszzl();
             }
             String gslrStr = "--";
-            if (StringUtils.isNotEmpty(fundBean.getNumber())) {
+            if (!hidenMoney && StringUtils.isNotEmpty(fundBean.getNumber())) {
                 gslrStr = String.format("%.2f", Double.valueOf(fundBean.getNumber()) * (Double.valueOf(fundBean.getGsz()) - Double.valueOf(fundBean.getDwjz())));
             }
             temp[i] = new Object[]{fundBean.getFundCode(), fundBean.getFundName(), gszzlStr + "%", gslrStr, timeStr};
@@ -177,15 +193,45 @@ public abstract class FundRefreshHandler {
         return temp;
     }
 
-    private String getCurDateStr() {
+    public String getCurDateStr() {
         return dateFormat.format(new Date());
     }
 
-    private String getCurDayStr() {
+    public String getCurDayStr() {
         return dayFormat.format(new Date());
+    }
+
+    public Date getStartDate() {
+        try {
+            return dateFormat.parse(getCurDayStr() + " " + LazyyConstant.TIME_START);
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
+    public Date getEndDate() {
+        try {
+            return dateFormat.parse(getCurDayStr() + " " + LazyyConstant.TIME_ENT);
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
+    public boolean canNowRefresh() {
+        Date startDate = getStartDate();
+        Date endDate = getEndDate();
+        Date nowDate = new Date();
+        // 开始 < 现在 < 结束
+        if (startDate.before(nowDate) && nowDate.before(endDate)) {
+            return true;
+        }
+        return false;
     }
 
     protected void clear(){
         data.clear();
     }
+
 }

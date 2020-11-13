@@ -1,12 +1,15 @@
 package setting.ui;
 
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
+import constant.LazyyConstant;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import storage.LazyyHelperSettings;
+import util.LogUtil;
 
 import javax.swing.*;
 
@@ -60,9 +63,13 @@ public class LazyyPanelConfigurable implements SearchableConfigurable {
     }
 
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
         settings.setDateSettings(settingWindow.getSettings().getDateSettings());
         settings = settingWindow.getSettings().clone();
+        String time = settingWindow.getTime();
+        boolean hidenMoney = settingWindow.isHidenMoney();
+        PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_TIME, time);
+        PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_HIDENMINEY, hidenMoney);
     }
 
 }

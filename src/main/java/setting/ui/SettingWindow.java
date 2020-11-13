@@ -1,25 +1,18 @@
 package setting.ui;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.EditorSettings;
-import com.intellij.openapi.fileTypes.FileTypeManager;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.DoubleClickListener;
 import com.intellij.ui.ToolbarDecorator;
-import com.intellij.ui.components.JBScrollPane;
+import constant.LazyyConstant;
 import org.jetbrains.annotations.NotNull;
 import storage.LazyyHelperSettings;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.util.List;
-import java.util.Optional;
 
 public class SettingWindow {
 
@@ -60,8 +53,11 @@ public class SettingWindow {
             }
         }.installOn(aliasTable);
 
-        timeComboBox.setSelectedItem(settings.getDateSettings().getTemplate());
-        hidenCheckBox.setEnabled(settings.getDateSettings().getHidenMoney());
+        String time = PropertiesComponent.getInstance().getValue(LazyyConstant.KEY_TIME);
+        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDENMINEY);
+
+        hidenCheckBox.setSelected(hidenMoney);
+        timeComboBox.setSelectedItem(time);
     }
 
     public LazyyHelperSettings getSettings() {
@@ -76,7 +72,17 @@ public class SettingWindow {
 
 
     public boolean isSettingsModified(LazyyHelperSettings settings) {
-        if (aliasTable.isModified(settings)) return true;
+        if (aliasTable.isModified(settings)) {
+            return true;
+        }
+        String time = PropertiesComponent.getInstance().getValue(LazyyConstant.KEY_TIME);
+        if (!time.equals(getTime())) {
+            return true;
+        }
+        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDENMINEY);
+        if (hidenMoney != isHidenMoney()) {
+            return true;
+        }
         return isModified(settings);
     }
 
@@ -89,6 +95,14 @@ public class SettingWindow {
 
     public JPanel getMainPanel() {
         return mainPanel;
+    }
+
+    public String getTime() {
+        return timeComboBox.getSelectedItem().toString();
+    }
+
+    public boolean isHidenMoney() {
+        return hidenCheckBox.isSelected();
     }
 
 }

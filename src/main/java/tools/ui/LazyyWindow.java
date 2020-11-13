@@ -1,6 +1,7 @@
 package tools.ui;
 
 import com.intellij.openapi.components.ServiceManager;
+import constant.LazyyConstant;
 import handler.FundRefreshHandler;
 import handler.TianTianFundHandler;
 import model.TypeAlias;
@@ -62,7 +63,7 @@ public class LazyyWindow implements ToolWindowFactory {
         return true;
     }
 
-    private List<TypeAlias> loadFunds(){
+    private List<TypeAlias> loadFunds() {
         List<TypeAlias> alias = new ArrayList<>();;
         try {
             alias = settings.getDateSettings().getTypeAliases();
