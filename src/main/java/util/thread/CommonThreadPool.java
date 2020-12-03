@@ -38,7 +38,7 @@ public class CommonThreadPool implements LifeCyle, ThreadPool {
         int i = 0;
 
         for (Supplier<T> func : suppliers.get()) {
-            service.submit(()->{
+            service.submit(() -> {
                 return func.get();
             });
             i++;

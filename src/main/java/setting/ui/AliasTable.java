@@ -23,8 +23,8 @@ public class AliasTable extends JBTable {
     private static final int COLUMN_CODE = 0;
     private static final int COLUMN_NUMBER = 1;
     private static final int COLUMN_MONEY = 2;
+    private static final int COLUMN_REMARK = 3;
     private final MyTableModel myTableModel = new MyTableModel();
-
 
     private List<TypeAlias> typeAliases = new LinkedList<>();
 
@@ -36,6 +36,7 @@ public class AliasTable extends JBTable {
         TableColumn codeColumn = getColumnModel().getColumn(COLUMN_CODE);
         TableColumn numberColumn = getColumnModel().getColumn(COLUMN_NUMBER);
         TableColumn moneyColumn = getColumnModel().getColumn(COLUMN_MONEY);
+        TableColumn remarkColumn = getColumnModel().getColumn(COLUMN_REMARK);
 //        column.setCellRenderer(new DefaultTableCellRenderer() {
 //            @Override
 //            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -47,9 +48,10 @@ public class AliasTable extends JBTable {
 //                return component;
 //            }
 //        });
-        setColumnSize(codeColumn, 150,250,150);
-        setColumnSize(numberColumn, 250,350,250);
-        setColumnSize(moneyColumn, 250,350,250);
+        setColumnSize(codeColumn, 150, 250, 150);
+        setColumnSize(numberColumn, 200, 300, 200);
+        setColumnSize(moneyColumn, 100, 150, 100);
+        setColumnSize(remarkColumn, 200, 250, 200);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
@@ -70,10 +72,10 @@ public class AliasTable extends JBTable {
 
 
     public void addAlias() {
-        final AliasEditor macroEditor = new AliasEditor("新增基金", "", "");
+        final AliasEditor macroEditor = new AliasEditor("新增基金", "", "", "", "");
         if (macroEditor.showAndGet()) {
             final String name = macroEditor.getTitle();
-            typeAliases.add(new TypeAlias(macroEditor.getTitle(), macroEditor.getDescription(), macroEditor.getMoney()));
+            typeAliases.add(new TypeAlias(macroEditor.getCode(), macroEditor.getNumber(), macroEditor.getMoney(), macroEditor.getRemark()));
             final int index = indexOfAliasWithName(name);
             log.assertTrue(index >= 0);
             myTableModel.fireTableDataChanged();
@@ -163,10 +165,12 @@ public class AliasTable extends JBTable {
         }
         final int selectedRow = getSelectedRow();
         final TypeAlias typeAlias = typeAliases.get(selectedRow);
-        final AliasEditor editor = new AliasEditor("编辑基金", typeAlias.getCode(), typeAlias.getNumber());
+        final AliasEditor editor = new AliasEditor("编辑基金", typeAlias.getCode(), typeAlias.getNumber(), typeAlias.getMoney(), typeAlias.getRemark());
         if (editor.showAndGet()) {
-            typeAlias.setCode(editor.getTitle());
-            typeAlias.setNumber(editor.getDescription());
+            typeAlias.setCode(editor.getCode());
+            typeAlias.setNumber(editor.getNumber());
+            typeAlias.setMoney(editor.getMoney());
+            typeAlias.setRemark(editor.getRemark());
             myTableModel.fireTableDataChanged();
         }
         return true;
@@ -197,7 +201,7 @@ public class AliasTable extends JBTable {
     private class MyTableModel extends AbstractTableModel {
         @Override
         public int getColumnCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -220,6 +224,8 @@ public class AliasTable extends JBTable {
                     return pair.getNumber();
                 case COLUMN_MONEY:
                     return pair.getMoney();
+                case COLUMN_REMARK:
+                    return pair.getRemark();
             }
             log.error("Wrong indices");
             return null;
@@ -237,7 +243,9 @@ public class AliasTable extends JBTable {
                 case COLUMN_NUMBER:
                     return "持有份数";
                 case COLUMN_MONEY:
-                    return "购买金额";
+                    return "购买金额(暂不可用)";
+                case COLUMN_REMARK:
+                    return "备注";
             }
             return null;
         }

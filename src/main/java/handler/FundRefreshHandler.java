@@ -39,6 +39,7 @@ public abstract class FundRefreshHandler {
 
     /**
      * 从网络更新数据
+     *
      * @param code
      */
     public abstract void handle(List<TypeAlias> code);
@@ -62,7 +63,7 @@ public abstract class FundRefreshHandler {
     }
 
     private void recordTableSize() {
-        if (table.getColumnModel().getColumnCount() == 0){
+        if (table.getColumnModel().getColumnCount() == 0) {
             return;
         }
         for (int i = 0; i < sizes.length; i++) {
@@ -72,7 +73,7 @@ public abstract class FundRefreshHandler {
 
     private void resizeTable() {
         for (int i = 0; i < sizes.length; i++) {
-            if (sizes[i] > 0){
+            if (sizes[i] > 0) {
                 table.getColumnModel().getColumn(i).setWidth(sizes[i]);
                 table.getColumnModel().getColumn(i).setPreferredWidth(sizes[i]);
             }
@@ -86,7 +87,7 @@ public abstract class FundRefreshHandler {
                 double temp = 0.0;
                 try {
                     // %
-                    String s = value.toString().substring(0,value.toString().length()-1);
+                    String s = value.toString().substring(0, value.toString().length() - 1);
                     temp = Double.parseDouble(s);
                 } catch (Exception e) {
 
@@ -167,13 +168,20 @@ public abstract class FundRefreshHandler {
 
     private Object[][] convertData() {
         // 隐藏收益
-        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDENMINEY);
+        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_MONEY);
+        boolean hidenTotalMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_TOTAL_MONEY);
 
-        Object[][] temp = new Object[data.size()][];
+        int size = data.size();
+        if (!hidenTotalMoney) {
+            // 显示总数 大小+1
+            size += 1;
+        }
+        Double totalMoney = 0D;
+        Object[][] temp = new Object[size][];
         for (int i = 0; i < data.size(); i++) {
             FundBean fundBean = data.get(i);
             String timeStr = fundBean.getGztime();
-            if(timeStr == null){
+            if (timeStr == null) {
                 break;
             }
             String today = getCurDayStr();
@@ -182,13 +190,19 @@ public abstract class FundRefreshHandler {
             }
             String gszzlStr = "--";
             if (fundBean.getGszzl() != null) {
-                gszzlStr= fundBean.getGszzl().startsWith("-") ? fundBean.getGszzl() : "+" + fundBean.getGszzl();
+                gszzlStr = fundBean.getGszzl().startsWith("-") ? fundBean.getGszzl() : "+" + fundBean.getGszzl();
             }
             String gslrStr = "--";
             if (!hidenMoney && StringUtils.isNotEmpty(fundBean.getNumber())) {
-                gslrStr = String.format("%.2f", Double.valueOf(fundBean.getNumber()) * (Double.valueOf(fundBean.getGsz()) - Double.valueOf(fundBean.getDwjz())));
+                double tempMoney = Double.valueOf(fundBean.getNumber()) * (Double.valueOf(fundBean.getGsz()) - Double.valueOf(fundBean.getDwjz()));
+                totalMoney += tempMoney;
+                gslrStr = String.format("%.2f", tempMoney);
             }
             temp[i] = new Object[]{fundBean.getFundCode(), fundBean.getFundName(), gszzlStr + "%", gslrStr, timeStr};
+        }
+        // 增加合计收益
+        if (!hidenTotalMoney) {
+            temp[size - 1] = new Object[]{"--", "合计:", "", String.format("%.2f", totalMoney), ""};
         }
         return temp;
     }
@@ -230,7 +244,7 @@ public abstract class FundRefreshHandler {
         return false;
     }
 
-    protected void clear(){
+    protected void clear() {
         data.clear();
     }
 

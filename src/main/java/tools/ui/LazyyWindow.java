@@ -26,8 +26,11 @@ public class LazyyWindow implements ToolWindowFactory {
     private JButton refreshButton;
     private JLabel aLabel;
     private JLabel bLabel;
+    private JLabel logoLabel;
 
     private LazyyHelperSettings settings;
+
+    private ShowWindow showWindow = new ShowWindow();
 
     FundRefreshHandler fundRefreshHandler;
 
@@ -35,22 +38,27 @@ public class LazyyWindow implements ToolWindowFactory {
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(mPanel, "lazyy", false);
-        Content other = contentFactory.createContent(mPanel, "other", false);
+        Content other = contentFactory.createContent(showWindow.getShowPanel(), "kkanp", false);
+
         toolWindow.getContentManager().addContent(content);
         toolWindow.getContentManager().addContent(other);
 
         LogUtil.setProject(project);
 
-        refreshButton.addActionListener(a -> fundRefreshHandler.handle(loadFunds()));
+        logoLabel.setText(LazyyConstant.LABEL_LOGO);
+        refreshButton.addActionListener(a -> {
+                    fundRefreshHandler.handle(loadFunds());
+                }
+        );
 
         this.settings = ServiceManager.getService(LazyyHelperSettings.class);
-
     }
 
     @Override
     public void init(ToolWindow window) {
         fundRefreshHandler = new TianTianFundHandler(table1, aLabel, bLabel);
         fundRefreshHandler.handle(loadFunds());
+
     }
 
     @Override
@@ -64,7 +72,8 @@ public class LazyyWindow implements ToolWindowFactory {
     }
 
     private List<TypeAlias> loadFunds() {
-        List<TypeAlias> alias = new ArrayList<>();;
+        List<TypeAlias> alias = new ArrayList<>();
+
         try {
             alias = settings.getDateSettings().getTypeAliases();
         } catch (NullPointerException e) {

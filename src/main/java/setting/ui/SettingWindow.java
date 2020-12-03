@@ -22,6 +22,7 @@ public class SettingWindow {
     private JPanel templateEditPenel;
     private JCheckBox hidenCheckBox;
     private JComboBox timeComboBox;
+    private JCheckBox hidenTotalCheckBox;
 
     protected LazyyHelperSettings settings;
     private AliasTable aliasTable;
@@ -54,9 +55,11 @@ public class SettingWindow {
         }.installOn(aliasTable);
 
         String time = PropertiesComponent.getInstance().getValue(LazyyConstant.KEY_TIME);
-        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDENMINEY);
+        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_MONEY);
+        boolean hidenTotalMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_TOTAL_MONEY);
 
         hidenCheckBox.setSelected(hidenMoney);
+        hidenTotalCheckBox.setSelected(hidenTotalMoney);
         timeComboBox.setSelectedItem(time);
     }
 
@@ -70,7 +73,6 @@ public class SettingWindow {
         aliasTable.reset(settings);
     }
 
-
     public boolean isSettingsModified(LazyyHelperSettings settings) {
         if (aliasTable.isModified(settings)) {
             return true;
@@ -79,8 +81,12 @@ public class SettingWindow {
         if (!time.equals(getTime())) {
             return true;
         }
-        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDENMINEY);
+        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_MONEY);
         if (hidenMoney != isHidenMoney()) {
+            return true;
+        }
+        boolean hidenTotalMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_TOTAL_MONEY);
+        if (hidenTotalMoney != isHidenTotalMoney()) {
             return true;
         }
         return isModified(settings);
@@ -103,6 +109,10 @@ public class SettingWindow {
 
     public boolean isHidenMoney() {
         return hidenCheckBox.isSelected();
+    }
+
+    public boolean isHidenTotalMoney() {
+        return hidenTotalCheckBox.isSelected();
     }
 
 }

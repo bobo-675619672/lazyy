@@ -7,32 +7,39 @@ import javax.swing.*;
 
 public class AliasEditor extends DialogWrapper {
     private JPanel myPanel;
-    private JTextField titleField;
-    private JTextField descriptionField;
+    private JTextField codeField;
+    private JTextField numberField;
     private JTextField moneyField;
+    private JTextField remarkField;
 
     public interface Validator {
         boolean isOK(String name, String value);
     }
 
-    public AliasEditor(String title, String macroName, String value) {
+    public AliasEditor(String title, String code, String number, String money, String remark) {
         super(true);
         setTitle(title);
-        titleField.setText(macroName);
-        descriptionField.setText(value);
+        codeField.setText(code);
+        numberField.setText(number);
+        moneyField.setText(money);
+        remarkField.setText(remark);
         init();
     }
 
-    public String getTitle() {
-        return titleField.getText().trim();
+    public String getCode() {
+        return codeField.getText().trim();
     }
 
-    public String getDescription() {
-        return descriptionField.getText().trim();
+    public String getNumber() {
+        return numberField.getText().trim();
     }
 
     public String getMoney() {
         return moneyField.getText().trim();
+    }
+
+    public String getRemark() {
+        return remarkField.getText().trim();
     }
 
     @Nullable

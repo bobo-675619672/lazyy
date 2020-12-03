@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.dw'
-version '1.0.4'
+version '1.0.6'
 
 sourceCompatibility = 1.8
 
@@ -28,7 +28,16 @@ intellij {
 
 patchPluginXml {
     changeNotes """
-        v1.0.4 第四个demo版本  <br>
+        v1.0.5 <br>
+        New:
+          1。表格页面-新增合计收益栏
+          2。设置页面-新增备注列
+          3。代码优化
+          
+        v1.0.6 <br>
+        New:
+          1。表格页面-新增kkanp标签页,展示趋势图
+          2。其他显示&逻辑优化
       """
     sinceBuild '173.*'
     untilBuild '202.*'

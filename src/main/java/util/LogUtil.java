@@ -12,7 +12,7 @@ public class LogUtil {
         LogUtil.project = project;
     }
 
-    public static void info(String text){
+    public static void info(String text) {
         new NotificationGroup("Gradle sync", NotificationDisplayType.NONE, true).createNotification(text, MessageType.INFO).notify(project);
     }
 }

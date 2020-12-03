@@ -20,14 +20,18 @@ public class TianTianFundHandler extends FundRefreshHandler {
 
     private CommonThreadPool commonThreadPool = new CommonThreadPool();
     private Thread worker;
+
     public TianTianFundHandler(JTable table, JLabel label1, JLabel label2) {
         super(table, label1, label2);
     }
 
     @Override
     public void handle(List<TypeAlias> code) {
-        if (code.isEmpty()){
+        if (code.isEmpty()) {
             return;
+        }
+        if (worker != null) {
+            worker.interrupt();
         }
         if (init_set.contains(getCurDayStr())) {
             if (!super.canNowRefresh()) {
@@ -39,13 +43,10 @@ public class TianTianFundHandler extends FundRefreshHandler {
             LogUtil.info("Lazyy 初始化基金编码数据.");
             init_set.add(getCurDayStr());
         }
-        if (worker != null) {
-            worker.interrupt();
-        }
         String time = PropertiesComponent.getInstance().getValue(LazyyConstant.KEY_TIME);
         LogUtil.info("自动刷新时间为:" + time + " 分钟");
         worker = new Thread(() -> {
-            while (worker!=null && worker.hashCode() == Thread.currentThread().hashCode() && !Thread.currentThread().isInterrupted()){
+            while (worker != null && worker.hashCode() == Thread.currentThread().hashCode() && !Thread.currentThread().isInterrupted()) {
                 stepAction();
                 updateSha();
                 try {

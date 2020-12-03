@@ -70,9 +70,8 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
             List<TypeAlias> typeAliases = new LinkedList<>();
             dataSettings.setTypeAliases(typeAliases);
             PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_TIME, "10");
-            PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_HIDENMINEY, true);
-//            dataSettings.setHidenMoney(true);
-//            dataSettings.setTime("1");
+            PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_HIDEN_MONEY, true);
+            PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_HIDEN_TOTAL_MONEY, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

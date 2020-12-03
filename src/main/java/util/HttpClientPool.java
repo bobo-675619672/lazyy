@@ -47,7 +47,7 @@ public class HttpClientPool {
 
     public String get(String url) throws Exception {
         HttpGet httpGet = new HttpGet(url);
-        return getResponseContent(url,httpGet);
+        return getResponseContent(url, httpGet);
     }
 
     public String post(String url) throws Exception {
@@ -58,12 +58,12 @@ public class HttpClientPool {
     private String getResponseContent(String url, HttpRequestBase request) throws Exception {
         HttpResponse response = null;
         try {
-            response = this.getHttpClient(2000,2000).execute(request);
-            return EntityUtils.toString(response.getEntity(),"utf-8");
+            response = this.getHttpClient(2000, 2000).execute(request);
+            return EntityUtils.toString(response.getEntity(), "utf-8");
         } catch (Exception e) {
-            throw new Exception("got an error from HTTP for url : " + URLDecoder.decode(url, "UTF-8"),e);
+            throw new Exception("got an error from HTTP for url : " + URLDecoder.decode(url, "UTF-8"), e);
         } finally {
-            if(response != null){
+            if (response != null) {
                 EntityUtils.consumeQuietly(response.getEntity());
             }
             request.releaseConnection();
