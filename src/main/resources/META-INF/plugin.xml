@@ -21,7 +21,7 @@
         <!-- Add your extensions here -->0
         <applicationService serviceImplementation="storage.LazyyHelperSettings"/>
         <applicationConfigurable instance="setting.ui.LazyyPanelConfigurable"/>
-        <toolWindow anchor="left" id="lazyy" factoryClass="tools.ui.LazyyWindow"/>
+        <toolWindow anchor="left" id="lazyy" factoryClass="tools.ui.LazyyWindow" icon="PluginIcons.ICON"/>
     </extensions>
 
     <application-components>

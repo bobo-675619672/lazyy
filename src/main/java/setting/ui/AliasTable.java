@@ -3,6 +3,7 @@ package setting.ui;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.table.JBTable;
+import model.DataSettings;
 import model.TypeAlias;
 import org.jetbrains.annotations.NotNull;
 import storage.LazyyHelperSettings;
@@ -138,7 +139,7 @@ public class AliasTable extends JBTable {
         myTableModel.fireTableDataChanged();
     }
 
-    public void reset(LazyyHelperSettings settings) {
+    public void reset(DataSettings settings) {
         obtainAliases(typeAliases, settings);
         myTableModel.fireTableDataChanged();
     }
@@ -154,9 +155,9 @@ public class AliasTable extends JBTable {
         return -1;
     }
 
-    private void obtainAliases(@NotNull List<TypeAlias> aliases, LazyyHelperSettings settings) {
+    private void obtainAliases(@NotNull List<TypeAlias> aliases, DataSettings settings) {
         aliases.clear();
-        aliases.addAll(settings.getDateSettings().getTypeAliases());
+        aliases.addAll(settings.getTypeAliases());
     }
 
     public boolean editAlias() {
@@ -176,7 +177,7 @@ public class AliasTable extends JBTable {
         return true;
     }
 
-    public boolean isModified(LazyyHelperSettings settings) {
+    public boolean isModified(DataSettings settings) {
         final List<TypeAlias> aliases = new LinkedList<>();
         obtainAliases(aliases, settings);
         return !aliases.equals(typeAliases);

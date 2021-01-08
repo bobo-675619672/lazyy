@@ -1,19 +1,18 @@
 package storage;
 
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.rits.cloning.Cloner;
-import constant.LazyyConstant;
+import model.AdvancedSettings;
 import model.DataSettings;
-import model.TypeAlias;
+import model.GeneralSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
-import java.util.List;
 
 @State(name = "LazyyHelperSettings", storages = {@Storage("$APP_CONFIG$/LazyyHelperSettings-settings.xml")})
 public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelperSettings> {
@@ -24,11 +23,25 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
 
     private DataSettings dataSettings;
 
+    /**
+     * 常规设置
+     */
+    private GeneralSettings generalSettings;
+
+    /**
+     * 高级设置
+     */
+    private AdvancedSettings advancedSettings;
+
     @Nullable
     @Override
     public LazyyHelperSettings getState() {
-        if (this.dataSettings == null) {
-            loadDefaultSettings();
+        if (this.dataSettings == null
+                || this.advancedSettings == null
+                || this.generalSettings == null) {
+            loadDefaultDataSettings();
+            loadDefaultGeneralSettings();
+            loadDefaultAdvancedSettings();
         }
         return this;
     }
@@ -38,20 +51,37 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
         XmlSerializerUtil.copyBean(lazzyHelperSettings, this);
     }
 
-    /**
-     * Getter method for property <tt>codeTemplates</tt>.
-     *
-     * @return property value of codeTemplates
-     */
     public DataSettings getDateSettings() {
         if (dataSettings == null) {
-            loadDefaultSettings();
+            loadDefaultDataSettings();
         }
         return dataSettings;
     }
 
     public void setDateSettings(DataSettings dateSettings) {
         this.dataSettings = dateSettings;
+    }
+
+    public AdvancedSettings getAdvancedSettings() {
+        if (advancedSettings == null) {
+            loadDefaultAdvancedSettings();
+        }
+        return advancedSettings;
+    }
+
+    public void setAdvancedSettings(AdvancedSettings advancedSettings) {
+        this.advancedSettings = advancedSettings;
+    }
+
+    public GeneralSettings getGeneralSettings() {
+        if (null == generalSettings) {
+            loadDefaultGeneralSettings();
+        }
+        return generalSettings;
+    }
+
+    public void setGeneralSettings(GeneralSettings generalSettings) {
+        this.generalSettings = generalSettings;
     }
 
     @Override
@@ -61,20 +91,22 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
         return cloner.deepClone(this);
     }
 
-    /**
-     * 加载默认配置
-     */
-    private void loadDefaultSettings() {
+    private void loadDefaultDataSettings() {
         dataSettings = new DataSettings();
-        try {
-            List<TypeAlias> typeAliases = new LinkedList<>();
-            dataSettings.setTypeAliases(typeAliases);
-            PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_TIME, "10");
-            PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_HIDEN_MONEY, true);
-            PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_HIDEN_TOTAL_MONEY, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        dataSettings.setTypeAliases(new LinkedList<>());
+    }
+
+    private void loadDefaultAdvancedSettings() {
+        advancedSettings = new AdvancedSettings();
+        advancedSettings.setOpenTime("09:00:00");
+        advancedSettings.setCloseTime("15:00:00");
+    }
+
+    private void loadDefaultGeneralSettings() {
+        generalSettings = new GeneralSettings();
+        generalSettings.setTime("10");
+        generalSettings.setHidenMoney(true);
+        generalSettings.setHidenTotalMoney(true);
     }
 
 }

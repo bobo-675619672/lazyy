@@ -1,19 +1,18 @@
 package tools.ui;
 
 import com.intellij.openapi.components.ServiceManager;
-import constant.LazyyConstant;
-import handler.FundRefreshHandler;
-import handler.TianTianFundHandler;
-import model.TypeAlias;
-import storage.LazyyHelperSettings;
-import util.LogUtil;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import constant.LazyyConstant;
+import handler.FundRefreshHandler;
+import handler.TianTianFundHandler;
+import model.TypeAlias;
 import org.jetbrains.annotations.NotNull;
+import storage.LazyyHelperSettings;
+import util.LogUtil;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ public class LazyyWindow implements ToolWindowFactory {
     private LazyyHelperSettings settings;
 
     private ShowWindow showWindow = new ShowWindow();
+//    private HtmlWindow htmlWindow = new HtmlWindow();
 
     FundRefreshHandler fundRefreshHandler;
 
@@ -46,19 +46,15 @@ public class LazyyWindow implements ToolWindowFactory {
         LogUtil.setProject(project);
 
         logoLabel.setText(LazyyConstant.LABEL_LOGO);
-        refreshButton.addActionListener(a -> {
-                    fundRefreshHandler.handle(loadFunds());
-                }
-        );
-
+        refreshButton.addActionListener(a -> fundRefreshHandler.refresh(LazyyConstant.REFRESH_UPDATE, loadFunds()));
         this.settings = ServiceManager.getService(LazyyHelperSettings.class);
     }
 
     @Override
     public void init(ToolWindow window) {
         fundRefreshHandler = new TianTianFundHandler(table1, aLabel, bLabel);
-        fundRefreshHandler.handle(loadFunds());
-
+        // 初始化数据
+        fundRefreshHandler.refresh(LazyyConstant.REFRESH_INIT, loadFunds());
     }
 
     @Override
@@ -71,13 +67,16 @@ public class LazyyWindow implements ToolWindowFactory {
         return true;
     }
 
+    /**
+     * 获取基金数据
+     * @return
+     */
     private List<TypeAlias> loadFunds() {
         List<TypeAlias> alias = new ArrayList<>();
-
         try {
             alias = settings.getDateSettings().getTypeAliases();
         } catch (NullPointerException e) {
-
+            e.printStackTrace();
         }
         return alias;
     }

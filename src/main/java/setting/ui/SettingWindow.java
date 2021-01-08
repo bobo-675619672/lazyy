@@ -1,12 +1,13 @@
 package setting.ui;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.DoubleClickListener;
 import com.intellij.ui.ToolbarDecorator;
-import constant.LazyyConstant;
+import model.AdvancedSettings;
+import model.DataSettings;
+import model.GeneralSettings;
 import org.jetbrains.annotations.NotNull;
 import storage.LazyyHelperSettings;
 
@@ -23,6 +24,10 @@ public class SettingWindow {
     private JCheckBox hidenCheckBox;
     private JComboBox timeComboBox;
     private JCheckBox hidenTotalCheckBox;
+    private JTextField openTimeField;
+    private JTextField closeTimeField;
+    private JCheckBox hidenFushiCheckBox;
+    private JCheckBox autoRefreshCheckBox;
 
     protected LazyyHelperSettings settings;
     private AliasTable aliasTable;
@@ -53,66 +58,98 @@ public class SettingWindow {
                 return aliasTable.editAlias();
             }
         }.installOn(aliasTable);
-
-        String time = PropertiesComponent.getInstance().getValue(LazyyConstant.KEY_TIME);
-        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_MONEY);
-        boolean hidenTotalMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_TOTAL_MONEY);
+        // 常规设置
+        boolean autoRefresh = this.settings.getGeneralSettings().isAutoRefresh();
+        String time = this.settings.getGeneralSettings().getTime();
+        boolean hidenMoney = this.settings.getGeneralSettings().isHidenMoney();
+        boolean hidenTotalMoney = this.settings.getGeneralSettings().isHidenTotalMoney();
+        boolean hidenFushi = this.settings.getGeneralSettings().isHidenFushi();
+        autoRefreshCheckBox.setSelected(autoRefresh);
+        this.refreshAction();
+        timeComboBox.setSelectedItem(time);
+        // 失效
+        autoRefreshCheckBox.addActionListener(a -> this.refreshAction());
 
         hidenCheckBox.setSelected(hidenMoney);
         hidenTotalCheckBox.setSelected(hidenTotalMoney);
-        timeComboBox.setSelectedItem(time);
+        hidenFushiCheckBox.setSelected(hidenFushi);
+        // 高级设置
+        String openTime = this.settings.getAdvancedSettings().getOpenTime();
+        String closeTime = this.settings.getAdvancedSettings().getCloseTime();
+        openTimeField.setText(openTime);
+        closeTimeField.setText(closeTime);
     }
 
     public LazyyHelperSettings getSettings() {
         aliasTable.commit(settings);
+        saveAdvancedSettingsModified();
+        saveGeneralSettingsModified();
         return settings;
     }
 
     public void reset(LazyyHelperSettings settings) {
         this.settings = settings.clone();
-        aliasTable.reset(settings);
+        aliasTable.reset(settings.getDateSettings());
     }
 
+    /**
+     * 判断设置是否变更
+     * @param settings
+     * @return
+     */
     public boolean isSettingsModified(LazyyHelperSettings settings) {
-        if (aliasTable.isModified(settings)) {
-            return true;
-        }
-        String time = PropertiesComponent.getInstance().getValue(LazyyConstant.KEY_TIME);
-        if (!time.equals(getTime())) {
-            return true;
-        }
-        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_MONEY);
-        if (hidenMoney != isHidenMoney()) {
-            return true;
-        }
-        boolean hidenTotalMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_TOTAL_MONEY);
-        if (hidenTotalMoney != isHidenTotalMoney()) {
-            return true;
-        }
-        return isModified(settings);
-    }
-
-    public boolean isModified(LazyyHelperSettings data) {
-        if (settings.getDateSettings().getTypeAliases() == data.getDateSettings().getTypeAliases()) {
+        if (isDataSettingsModified(settings.getDateSettings())
+                || isGeneralSettingsModified(settings.getGeneralSettings())
+                || isAdvancedSettingsModified(settings.getAdvancedSettings())) {
             return true;
         }
         return false;
+    }
+
+    public boolean isDataSettingsModified(DataSettings settings) {
+        return aliasTable.isModified(settings);
+    }
+
+    public boolean isGeneralSettingsModified(GeneralSettings data) {
+        if (!data.getTime().equals(timeComboBox.getSelectedItem().toString())
+                || data.isAutoRefresh() != autoRefreshCheckBox.isSelected()
+                || data.isHidenMoney() != hidenCheckBox.isSelected()
+                || data.isHidenTotalMoney() != hidenTotalCheckBox.isSelected()
+                || data.isHidenFushi() != hidenFushiCheckBox.isSelected()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isAdvancedSettingsModified(AdvancedSettings data) {
+        if (!data.getOpenTime().equals(openTimeField.getText())
+                || !data.getCloseTime().equals(closeTimeField.getText())) {
+            return true;
+        }
+        return false;
+    }
+
+    public AdvancedSettings saveAdvancedSettingsModified() {
+        settings.getAdvancedSettings().setOpenTime(openTimeField.getText());
+        settings.getAdvancedSettings().setCloseTime(closeTimeField.getText());
+        return settings.getAdvancedSettings();
+    }
+
+    public GeneralSettings saveGeneralSettingsModified() {
+        settings.getGeneralSettings().setAutoRefresh(autoRefreshCheckBox.isSelected());
+        settings.getGeneralSettings().setTime(timeComboBox.getSelectedItem().toString());
+        settings.getGeneralSettings().setHidenMoney(hidenCheckBox.isSelected());
+        settings.getGeneralSettings().setHidenTotalMoney(hidenTotalCheckBox.isSelected());
+        settings.getGeneralSettings().setHidenFushi(hidenFushiCheckBox.isSelected());
+        return settings.getGeneralSettings();
     }
 
     public JPanel getMainPanel() {
         return mainPanel;
     }
 
-    public String getTime() {
-        return timeComboBox.getSelectedItem().toString();
-    }
-
-    public boolean isHidenMoney() {
-        return hidenCheckBox.isSelected();
-    }
-
-    public boolean isHidenTotalMoney() {
-        return hidenTotalCheckBox.isSelected();
+    public void refreshAction() {
+        timeComboBox.setEnabled(autoRefreshCheckBox.isSelected());
     }
 
 }

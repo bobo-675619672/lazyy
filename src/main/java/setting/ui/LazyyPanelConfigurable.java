@@ -57,19 +57,15 @@ public class LazyyPanelConfigurable implements SearchableConfigurable {
 
     @Override
     public boolean isModified() {
-        return settingWindow != null && settingWindow.isSettingsModified(settings);
+        return null != settingWindow && settingWindow.isSettingsModified(settings);
     }
 
     @Override
     public void apply() {
         settings.setDateSettings(settingWindow.getSettings().getDateSettings());
+        settings.setAdvancedSettings(settingWindow.saveAdvancedSettingsModified());
+        settings.setGeneralSettings(settingWindow.saveGeneralSettingsModified());
         settings = settingWindow.getSettings().clone();
-        String time = settingWindow.getTime();
-        boolean hidenMoney = settingWindow.isHidenMoney();
-        boolean hidenTotalMoney = settingWindow.isHidenTotalMoney();
-        PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_TIME, time);
-        PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_HIDEN_MONEY, hidenMoney);
-        PropertiesComponent.getInstance().setValue(LazyyConstant.KEY_HIDEN_TOTAL_MONEY, hidenTotalMoney);
     }
 
 }

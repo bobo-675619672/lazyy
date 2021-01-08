@@ -4,19 +4,20 @@ plugins {
 }
 
 group 'com.dw'
-version '1.0.6'
+version '1.0.8'
 
 sourceCompatibility = 1.8
 
 repositories {
-    mavenCentral()
-    jcenter()
+    // 阿里云仓库
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
 }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'com.github.promeg:tinypinyin:2.0.3' // TinyPinyin核心包，约80KB
     compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.12'
+    compile 'joda-time:joda-time:2.9.9'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
@@ -28,16 +29,37 @@ intellij {
 
 patchPluginXml {
     changeNotes """
-        v1.0.5 <br>
-        New:
-          1。表格页面-新增合计收益栏
-          2。设置页面-新增备注列
-          3。代码优化
-          
-        v1.0.6 <br>
-        New:
-          1。表格页面-新增kkanp标签页,展示趋势图
-          2。其他显示&逻辑优化
+        ---> 分割线 <---
+        v1.0.5
+          1. 表格页面-新增合计收益栏
+          2. 设置页面-新增备注列
+          3. 代码优化
+        ---> 分割线 <---
+        v1.0.6
+          1. 表格页面-新增走势标签页
+          2. 增加图标
+          3. 其他显示&逻辑优化
+        ---> 分割线 <---
+        v1.0.7
+          1. 表格页面
+            1.1 修复走势图页面不刷新bug
+            1.2 切换指数下拉框，实时更新数据
+            1.3 修复表格数据偶尔出现丢失问题(使用单例线程池)
+          2. 代码优化
+        ---> 分割线 <---
+        v1.0.8
+          1. 设置页面
+            1.1 新增常规设置
+              1.1.1 隐藏收益等设置移动至此页面
+              1.1.2 新增富时中国A50指数日志打印选项
+            1.2 新增高级设置，设置赌场相关
+          2. 表格页面
+            2.1 优化底部布局
+            2.2 富时中国A50指数日志打印
+          3. 代码优化
+            3.1 优化设置数据生命周期
+            3.2 逻辑优化
+        ---> 分割线 <---
       """
     sinceBuild '173.*'
     untilBuild '202.*'

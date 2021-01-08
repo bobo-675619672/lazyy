@@ -1,10 +1,5 @@
 package model;
 
-/**
- * @program: git-commit-message-helper
- * @author: fulin
- * @create: 2019-12-06 21:11
- **/
 public class TypeAlias extends DomainObject {
     public String code;
     public String number;

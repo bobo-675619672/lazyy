@@ -11,6 +11,23 @@ public class CommonThreadPool implements LifeCyle, ThreadPool {
     private int size = 50;
     private LifeCyleStatus status = LifeCyleStatus.NEW;
 
+    private static CommonThreadPool instance = null;
+
+    /**
+     * 私有化构造方法
+     * 不能new
+     */
+    private CommonThreadPool() {
+
+    }
+
+    public static CommonThreadPool getInstance() {
+        if (null == instance) {
+            instance = new CommonThreadPool();
+        }
+        return instance;
+    }
+
     @Override
     public synchronized void execute(Runnable worker) {
         if (this.status != LifeCyleStatus.RUNNING) {

@@ -1,6 +1,7 @@
 package model;
 
 import com.google.gson.annotations.SerializedName;
+import constant.LazyyConstant;
 
 import java.util.Objects;
 
@@ -22,14 +23,14 @@ public class FundBean {
 
     public FundBean(String fundCode) {
         this.fundCode = fundCode;
-        this.fundName = "--";
+        this.fundName = LazyyConstant.NONE_SHOW;
     }
 
     public FundBean(TypeAlias alias) {
         this.fundCode = alias.getCode();
         this.money = alias.getMoney();
         this.number = alias.getNumber();
-        this.fundName = "--";
+        this.fundName = "";
     }
 
 
@@ -107,8 +108,12 @@ public class FundBean {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         FundBean fundBean = (FundBean) o;
         return Objects.equals(fundCode, fundBean.fundCode);
     }

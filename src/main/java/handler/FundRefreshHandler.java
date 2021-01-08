@@ -1,31 +1,32 @@
 package handler;
 
-import com.intellij.ide.util.PropertiesComponent;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.ui.JBColor;
 import constant.LazyyConstant;
 import model.FundBean;
-import com.intellij.ui.JBColor;
 import model.TypeAlias;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import storage.LazyyHelperSettings;
+import util.DateUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public abstract class FundRefreshHandler {
-
-    public static Set<String> init_set = new HashSet<>();
 
     private ArrayList<FundBean> data = new ArrayList<>();
     private JTable table;
     private JLabel label1;
     private JLabel label2;
     private int[] sizes = new int[]{0, 0, 0, 0, 0};
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    private LazyyHelperSettings settings;
 
     public FundRefreshHandler(JTable table, JLabel label1, JLabel label2) {
         this.table = table;
@@ -35,14 +36,13 @@ public abstract class FundRefreshHandler {
         // Fix tree row height
         FontMetrics metrics = table.getFontMetrics(table.getFont());
         table.setRowHeight(Math.max(table.getRowHeight(), metrics.getHeight()));
+
+        settings = ServiceManager.getService(LazyyHelperSettings.class);
     }
 
-    /**
-     * 从网络更新数据
-     *
-     * @param code
-     */
-    public abstract void handle(List<TypeAlias> code);
+    public abstract void refresh(String flag, List<TypeAlias> code);
+
+    public abstract void autoRefresh();
 
     /**
      * 更新全部数据
@@ -81,10 +81,11 @@ public abstract class FundRefreshHandler {
     }
 
     private void updateColors() {
+        // 估计涨跌
         table.getColumn(table.getColumnName(2)).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                double temp = 0.0;
+                double temp = 0D;
                 try {
                     // %
                     String s = value.toString().substring(0, value.toString().length() - 1);
@@ -92,34 +93,36 @@ public abstract class FundRefreshHandler {
                 } catch (Exception e) {
 
                 }
-                Color orgin = getForeground();
                 if (temp > 0) {
                     setForeground(JBColor.RED);
                 } else if (temp < 0) {
                     setForeground(JBColor.GREEN);
                 } else if (temp == 0) {
-                    setForeground(orgin);
+                    setForeground(JBColor.BLACK);
                 }
                 return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }
         });
+        // 估计收益
         table.getColumn(table.getColumnName(3)).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                double temp = 0.0;
+                double temp = 0D;
                 try {
                     String s = value.toString();
-                    temp = Double.parseDouble(s);
+                    // 无购买份数，无收益
+                    if (!LazyyConstant.NONE_SHOW.equals(s)) {
+                        temp = Double.parseDouble(s);
+                    }
                 } catch (Exception e) {
 
                 }
-                Color orgin = getForeground();
-                if (temp > 0) {
+                if (temp > 0D) {
                     setForeground(JBColor.RED);
-                } else if (temp < 0) {
+                } else if (temp < 0D) {
                     setForeground(JBColor.GREEN);
-                } else if (temp == 0) {
-                    setForeground(orgin);
+                } else if (temp == 0D) {
+                    setForeground(JBColor.BLACK);
                 }
                 return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }
@@ -135,12 +138,18 @@ public abstract class FundRefreshHandler {
         }
     }
 
+    protected void updateDatas(List<FundBean> beans) {
+        for (FundBean bean : beans) {
+            updateData(bean);
+        }
+    }
+
     protected void updateShaLabel(String[] sha) {
         // 当天还没开始
-        if (getStartDate().after(new Date())) {
-            label2.setText(getCurDateStr() + "(赌场还没开门)");
-            return;
-        }
+//        if (getStartDate().after(new Date())) {
+//            label2.setText(DateUtil.getCurDateFullStr() + "(赌场还没开门)");
+//            return;
+//        }
         // [上证指数,3317.9847,40.5445,1.24,1822997,25641104]
         String name = sha[0];
         String index1 = sha[1];
@@ -159,17 +168,17 @@ public abstract class FundRefreshHandler {
         String show = String.format("%s (%s%s / %s%s%%)", index1, code2, index2, code3, index3);
         label1.setText(show);
         // 当天已经结束
-        if (getEndDate().before(new Date())) {
-            label2.setText(getCurDayStr() + " " + LazyyConstant.TIME_ENT + "(赌场已经关门)");
-        } else {
-            label2.setText(getCurDateStr());
-        }
+//        if (getEndDate().before(new Date())) {
+//            label2.setText(DateUtil.getCurDateStr() + " " + settings.getAdvancedSettings().getCloseTime() + "(赌场已经关门)");
+//        } else {
+//            label2.setText(DateUtil.getCurDateFullStr());
+//        }
     }
 
     private Object[][] convertData() {
         // 隐藏收益
-        boolean hidenMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_MONEY);
-        boolean hidenTotalMoney = PropertiesComponent.getInstance().getBoolean(LazyyConstant.KEY_HIDEN_TOTAL_MONEY);
+        boolean hidenMoney = settings.getGeneralSettings().isHidenMoney();
+        boolean hidenTotalMoney = settings.getGeneralSettings().isHidenTotalMoney();
 
         int size = data.size();
         if (!hidenTotalMoney) {
@@ -180,19 +189,23 @@ public abstract class FundRefreshHandler {
         Object[][] temp = new Object[size][];
         for (int i = 0; i < data.size(); i++) {
             FundBean fundBean = data.get(i);
-            String timeStr = fundBean.getGztime();
-            if (timeStr == null) {
+            // 多线程问题
+            if (null == fundBean) {
                 break;
             }
-            String today = getCurDayStr();
+            String timeStr = fundBean.getGztime();
+            if (null == timeStr) {
+                break;
+            }
+            String today = DateUtil.getCurDateStr();
             if (timeStr != null && timeStr.startsWith(today)) {
                 timeStr = timeStr.substring(timeStr.indexOf(" "));
             }
-            String gszzlStr = "--";
+            String gszzlStr = LazyyConstant.NONE_SHOW;
             if (fundBean.getGszzl() != null) {
                 gszzlStr = fundBean.getGszzl().startsWith("-") ? fundBean.getGszzl() : "+" + fundBean.getGszzl();
             }
-            String gslrStr = "--";
+            String gslrStr = LazyyConstant.NONE_SHOW;
             if (!hidenMoney && StringUtils.isNotEmpty(fundBean.getNumber())) {
                 double tempMoney = Double.valueOf(fundBean.getNumber()) * (Double.valueOf(fundBean.getGsz()) - Double.valueOf(fundBean.getDwjz()));
                 totalMoney += tempMoney;
@@ -202,43 +215,17 @@ public abstract class FundRefreshHandler {
         }
         // 增加合计收益
         if (!hidenTotalMoney) {
-            temp[size - 1] = new Object[]{"--", "合计:", "", String.format("%.2f", totalMoney), ""};
+            temp[size - 1] = new Object[]{LazyyConstant.NONE_SHOW, "合计:", "", String.format("%.2f", totalMoney), ""};
         }
         return temp;
     }
 
-    public String getCurDateStr() {
-        return dateFormat.format(new Date());
-    }
-
-    public String getCurDayStr() {
-        return dayFormat.format(new Date());
-    }
-
-    public Date getStartDate() {
-        try {
-            return dateFormat.parse(getCurDayStr() + " " + LazyyConstant.TIME_START);
-        } catch (Exception e) {
-
-        }
-        return null;
-    }
-
-    public Date getEndDate() {
-        try {
-            return dateFormat.parse(getCurDayStr() + " " + LazyyConstant.TIME_ENT);
-        } catch (Exception e) {
-
-        }
-        return null;
-    }
 
     public boolean canNowRefresh() {
-        Date startDate = getStartDate();
-        Date endDate = getEndDate();
-        Date nowDate = new Date();
-        // 开始 < 现在 < 结束
-        if (startDate.before(nowDate) && nowDate.before(endDate)) {
+        String curDate = DateUtil.getCurDateStr();
+        String openTime = curDate + " " + settings.getAdvancedSettings().getOpenTime();
+        String closeTime = curDate + " " + settings.getAdvancedSettings().getCloseTime();
+        if (DateUtil.isNowBetween(openTime, closeTime)) {
             return true;
         }
         return false;
