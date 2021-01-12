@@ -66,7 +66,7 @@ public class TianTianFundHandler extends FundRefreshHandler {
             while (autoRunFlag) {
                 try {
                     Thread.sleep(Integer.valueOf(time) * 60 * 1000);
-                    LogUtil.info("Lazyy 自动刷新...");
+                    LogUtil.info("Lazyy 自动刷新...(间隔" + time + "分钟)");
                     stepAction();
                     updateSha();
                     printlnFushi();
@@ -81,28 +81,29 @@ public class TianTianFundHandler extends FundRefreshHandler {
 
     @Override
     public void refresh(String flag, List<TypeAlias> code) {
-        super.clear();
-        codes.clear();
-        codes.addAll(code);
-        stepAction();
-        updateSha();
-        printlnFushi();
-
         switch (flag) {
             case LazyyConstant.REFRESH_INIT:
                 // 初始化
                 LogUtil.info("Lazyy 初始化基金数据.");
-                // 触发自动刷新逻辑
-                autoRefresh();
                 break;
             case LazyyConstant.REFRESH_UPDATE:
                 // 手动更新
                 LogUtil.info("Lazyy 手动更新基金数据.");
-                // 不触发自动刷新逻辑
                 break;
             default:
                 break;
         }
+        super.clear();
+        codes.clear();
+        codes.addAll(code);
+        //排序，按加入顺序
+        for (TypeAlias s : codes) {
+            updateData(new FundBean(s));
+        }
+        stepAction();
+        updateSha();
+        printlnFushi();
+        autoRefresh();
     }
 
     private void stepAction() {

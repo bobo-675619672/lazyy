@@ -50,8 +50,8 @@ public class AliasTable extends JBTable {
 //            }
 //        });
         setColumnSize(codeColumn, 150, 250, 150);
-        setColumnSize(numberColumn, 200, 300, 200);
-        setColumnSize(moneyColumn, 100, 150, 100);
+        setColumnSize(numberColumn, 150, 250, 150);
+        setColumnSize(moneyColumn, 150, 200, 150);
         setColumnSize(remarkColumn, 200, 250, 200);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }

@@ -36,6 +36,7 @@ public class LazyyWindow implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         Content content = contentFactory.createContent(mPanel, "lazyy", false);
         Content other = contentFactory.createContent(showWindow.getShowPanel(), "kkanp", false);
@@ -44,14 +45,14 @@ public class LazyyWindow implements ToolWindowFactory {
         toolWindow.getContentManager().addContent(other);
 
         LogUtil.setProject(project);
-
         logoLabel.setText(LazyyConstant.LABEL_LOGO);
         refreshButton.addActionListener(a -> fundRefreshHandler.refresh(LazyyConstant.REFRESH_UPDATE, loadFunds()));
-        this.settings = ServiceManager.getService(LazyyHelperSettings.class);
     }
 
     @Override
     public void init(ToolWindow window) {
+        // 读取数据
+        this.settings = ServiceManager.getService(LazyyHelperSettings.class);
         fundRefreshHandler = new TianTianFundHandler(table1, aLabel, bLabel);
         // 初始化数据
         fundRefreshHandler.refresh(LazyyConstant.REFRESH_INIT, loadFunds());

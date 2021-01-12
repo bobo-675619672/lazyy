@@ -2,7 +2,7 @@ package constant;
 
 public class LazyyConstant {
 
-    public static final String LABEL_LOGO = "  Laz⚡⚡ V1.0.8";
+    public static final String LABEL_LOGO = "  Laz⚡⚡ V1.0.9";
 
     public static final String[] KKP_CODES = {
             "sh000001",

@@ -168,11 +168,11 @@ public abstract class FundRefreshHandler {
         String show = String.format("%s (%s%s / %s%s%%)", index1, code2, index2, code3, index3);
         label1.setText(show);
         // 当天已经结束
-//        if (getEndDate().before(new Date())) {
-//            label2.setText(DateUtil.getCurDateStr() + " " + settings.getAdvancedSettings().getCloseTime() + "(赌场已经关门)");
-//        } else {
-//            label2.setText(DateUtil.getCurDateFullStr());
-//        }
+        if (canNowRefresh()) {
+            label2.setText(DateUtil.getCurDateFullStr());
+        } else {
+            label2.setText(DateUtil.getCurDateStr() + " " + settings.getAdvancedSettings().getCloseTime() + "(赌场已经关门)");
+        }
     }
 
     private Object[][] convertData() {
