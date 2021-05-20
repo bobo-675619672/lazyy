@@ -6,6 +6,8 @@ public class AdvancedSettings extends DomainObject {
 
     private String closeTime;
 
+    private String newsCount;
+
     public String getOpenTime() {
         return openTime;
     }
@@ -20,6 +22,14 @@ public class AdvancedSettings extends DomainObject {
 
     public void setCloseTime(String closeTime) {
         this.closeTime = closeTime;
+    }
+
+    public String getNewsCount() {
+        return newsCount;
+    }
+
+    public void setNewsCount(String newsCount) {
+        this.newsCount = newsCount;
     }
 
 }

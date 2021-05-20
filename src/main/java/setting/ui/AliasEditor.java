@@ -9,19 +9,19 @@ public class AliasEditor extends DialogWrapper {
     private JPanel myPanel;
     private JTextField codeField;
     private JTextField numberField;
-    private JTextField moneyField;
+    private JTextField holdField;
     private JTextField remarkField;
 
     public interface Validator {
         boolean isOK(String name, String value);
     }
 
-    public AliasEditor(String title, String code, String number, String money, String remark) {
+    public AliasEditor(String title, String code, String number, String hold, String remark) {
         super(true);
         setTitle(title);
         codeField.setText(code);
         numberField.setText(number);
-        moneyField.setText(money);
+        holdField.setText(hold);
         remarkField.setText(remark);
         init();
     }
@@ -34,8 +34,8 @@ public class AliasEditor extends DialogWrapper {
         return numberField.getText().trim();
     }
 
-    public String getMoney() {
-        return moneyField.getText().trim();
+    public String getHold() {
+        return holdField.getText().trim();
     }
 
     public String getRemark() {

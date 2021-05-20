@@ -4,13 +4,16 @@ plugins {
 }
 
 group 'com.dw'
-version '1.0.9'
+version '1.0.11'
 
 sourceCompatibility = 1.8
 
 repositories {
     // 阿里云仓库
     maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+    maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
+    maven { url 'https://plugins.gradle.org/m2/' }
 }
 
 dependencies {
@@ -28,8 +31,7 @@ intellij {
 }
 
 patchPluginXml {
-    changeNotes """
-        ---> 分割线 <---
+    /*---> 分割线 <---
         v1.0.5
           1. 表格页面-新增合计收益栏
           2. 设置页面-新增备注列
@@ -70,7 +72,29 @@ patchPluginXml {
           3. 代码优化
             3.1 解决线程终止问题
             3.2 优化日志打印
-        ---> 分割线 <---
+        ---> 分割线 <---*/
+/*    changeNotes """
+        v1.0.10<br>
+        &nbsp;|1.设置页面<br>
+        &nbsp;&nbsp;|1.1 新增持有价<br>
+        &nbsp;&nbsp;|1.2 新增设置是否显示持有收益/持有收益率<br>
+        &nbsp;&nbsp;|1.3 废弃购买金额<br>
+        &nbsp;|2.表格页面<br>
+        &nbsp;&nbsp;|2.1 新增持有收益/持有收益率<br>
+        &nbsp;&nbsp;|2.2 修改赌场关门提示<br>
+        &nbsp;|3.代码优化<br>
+        &nbsp;&nbsp;|3.1 更换插件图标<br>
+        &nbsp;&nbsp;|3.2 优化线程部分代码<br>
+      """*/
+    changeNotes """
+        v1.0.11<br>
+        &nbsp;|1.新增新闻newss页面<br>
+        &nbsp;&nbsp;|1.1 新增东方财富新闻<br>
+        &nbsp;&nbsp;|1.2 双击新闻标题跳转浏览器阅读详情<br>
+        &nbsp;&nbsp;|1.3 鼠标停留标题提示<br>
+        &nbsp;&nbsp;|1.4 高级设置可填新闻条数<br>
+        &nbsp;|2.页面优化<br>
+        &nbsp;&nbsp;|2.1 面板表格设置不可编辑<br>
       """
     sinceBuild '173.*'
     untilBuild '202.*'

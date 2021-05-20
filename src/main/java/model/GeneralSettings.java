@@ -12,6 +12,8 @@ public class GeneralSettings extends DomainObject {
 
     private boolean hidenFushi;
 
+    private boolean hidenHold;
+
     public String getTime() {
         return time;
     }
@@ -52,4 +54,11 @@ public class GeneralSettings extends DomainObject {
         this.autoRefresh = autoRefresh;
     }
 
+    public boolean isHidenHold() {
+        return hidenHold;
+    }
+
+    public void setHidenHold(boolean hidenHold) {
+        this.hidenHold = hidenHold;
+    }
 }

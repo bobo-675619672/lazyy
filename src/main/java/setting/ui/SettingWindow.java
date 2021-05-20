@@ -28,15 +28,16 @@ public class SettingWindow {
     private JTextField closeTimeField;
     private JCheckBox hidenFushiCheckBox;
     private JCheckBox autoRefreshCheckBox;
+    private JCheckBox hidenHoldCheckBox;
+    private JTextField newsCountField;
 
     protected LazyyHelperSettings settings;
     private AliasTable aliasTable;
 
     public SettingWindow(LazyyHelperSettings settings) {
-        //get setting
         this.settings = settings.clone();
         aliasTable = new AliasTable();
-        //init   typeEditPenel
+        //初始化数据
         typeEditPenel.add(
                 ToolbarDecorator.createDecorator(aliasTable)
                         .setAddAction(button -> aliasTable.addAlias())
@@ -64,6 +65,7 @@ public class SettingWindow {
         boolean hidenMoney = this.settings.getGeneralSettings().isHidenMoney();
         boolean hidenTotalMoney = this.settings.getGeneralSettings().isHidenTotalMoney();
         boolean hidenFushi = this.settings.getGeneralSettings().isHidenFushi();
+        boolean hidenHold = this.settings.getGeneralSettings().isHidenHold();
         autoRefreshCheckBox.setSelected(autoRefresh);
         this.refreshAction();
         timeComboBox.setSelectedItem(time);
@@ -73,11 +75,14 @@ public class SettingWindow {
         hidenCheckBox.setSelected(hidenMoney);
         hidenTotalCheckBox.setSelected(hidenTotalMoney);
         hidenFushiCheckBox.setSelected(hidenFushi);
+        hidenHoldCheckBox.setSelected(hidenHold);
         // 高级设置
         String openTime = this.settings.getAdvancedSettings().getOpenTime();
         String closeTime = this.settings.getAdvancedSettings().getCloseTime();
+        String newsCount = this.settings.getAdvancedSettings().getNewsCount();
         openTimeField.setText(openTime);
         closeTimeField.setText(closeTime);
+        newsCountField.setText(newsCount);
     }
 
     public LazyyHelperSettings getSettings() {
@@ -115,7 +120,8 @@ public class SettingWindow {
                 || data.isAutoRefresh() != autoRefreshCheckBox.isSelected()
                 || data.isHidenMoney() != hidenCheckBox.isSelected()
                 || data.isHidenTotalMoney() != hidenTotalCheckBox.isSelected()
-                || data.isHidenFushi() != hidenFushiCheckBox.isSelected()) {
+                || data.isHidenFushi() != hidenFushiCheckBox.isSelected()
+                || data.isHidenHold() != hidenHoldCheckBox.isSelected()) {
             return true;
         }
         return false;
@@ -123,7 +129,8 @@ public class SettingWindow {
 
     public boolean isAdvancedSettingsModified(AdvancedSettings data) {
         if (!data.getOpenTime().equals(openTimeField.getText())
-                || !data.getCloseTime().equals(closeTimeField.getText())) {
+                || !data.getCloseTime().equals(closeTimeField.getText())
+                || !data.getNewsCount().equals(newsCountField.getText())) {
             return true;
         }
         return false;
@@ -132,6 +139,7 @@ public class SettingWindow {
     public AdvancedSettings saveAdvancedSettingsModified() {
         settings.getAdvancedSettings().setOpenTime(openTimeField.getText());
         settings.getAdvancedSettings().setCloseTime(closeTimeField.getText());
+        settings.getAdvancedSettings().setNewsCount(newsCountField.getText());
         return settings.getAdvancedSettings();
     }
 
@@ -141,6 +149,7 @@ public class SettingWindow {
         settings.getGeneralSettings().setHidenMoney(hidenCheckBox.isSelected());
         settings.getGeneralSettings().setHidenTotalMoney(hidenTotalCheckBox.isSelected());
         settings.getGeneralSettings().setHidenFushi(hidenFushiCheckBox.isSelected());
+        settings.getGeneralSettings().setHidenHold(hidenHoldCheckBox.isSelected());
         return settings.getGeneralSettings();
     }
 

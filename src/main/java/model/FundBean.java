@@ -15,7 +15,7 @@ public class FundBean {
     private String gsz; //估算净值
     private String gszzl;//估算涨跌百分比 即-0.42%
     private String gztime;//gztime估值时间
-    private String money;//购买金额
+    private String hold;//持有价
     private String number;//份数
 
     public FundBean() {
@@ -28,7 +28,7 @@ public class FundBean {
 
     public FundBean(TypeAlias alias) {
         this.fundCode = alias.getCode();
-        this.money = alias.getMoney();
+        this.hold = alias.getHold();
         this.number = alias.getNumber();
         this.fundName = "";
     }
@@ -90,12 +90,12 @@ public class FundBean {
         this.gztime = gztime;
     }
 
-    public String getMoney() {
-        return money;
+    public String getHold() {
+        return hold;
     }
 
-    public void setMoney(String money) {
-        this.money = money;
+    public void setHold(String hold) {
+        this.hold = hold;
     }
 
     public String getNumber() {

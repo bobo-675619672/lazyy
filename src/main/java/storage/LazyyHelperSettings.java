@@ -100,6 +100,7 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
         advancedSettings = new AdvancedSettings();
         advancedSettings.setOpenTime("09:00:00");
         advancedSettings.setCloseTime("15:00:00");
+        advancedSettings.setNewsCount("20");
     }
 
     private void loadDefaultGeneralSettings() {
@@ -107,6 +108,7 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
         generalSettings.setTime("10");
         generalSettings.setHidenMoney(true);
         generalSettings.setHidenTotalMoney(true);
+        generalSettings.setHidenHold(true);
     }
 
 }

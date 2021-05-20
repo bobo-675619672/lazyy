@@ -3,16 +3,16 @@ package model;
 public class TypeAlias extends DomainObject {
     public String code;
     public String number;
-    public String money;
+    public String hold;
     public String remark;
 
     public TypeAlias() {
     }
 
-    public TypeAlias(String code, String number, String money, String remark) {
+    public TypeAlias(String code, String number, String hold, String remark) {
         this.code = code;
         this.number = number;
-        this.money = money;
+        this.hold = hold;
         this.remark = remark;
     }
 
@@ -32,12 +32,12 @@ public class TypeAlias extends DomainObject {
         this.number = number;
     }
 
-    public String getMoney() {
-        return this.money;
+    public String getHold() {
+        return this.hold;
     }
 
-    public void setMoney(String money) {
-        this.money = money;
+    public void setHold(String hold) {
+        this.hold = hold;
     }
 
     public String getRemark() {
@@ -50,6 +50,6 @@ public class TypeAlias extends DomainObject {
 
     @Override
     public String toString() {
-        return String.format("%s - %s - %s - %s", this.code, this.number, this.money, this.remark);
+        return String.format("%s - %s - %s - %s", this.code, this.number, this.hold, this.remark);
     }
 }

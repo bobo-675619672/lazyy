@@ -2,7 +2,6 @@ package handler;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.components.ServiceManager;
 import constant.LazyyConstant;
 import model.FundBean;
@@ -118,10 +117,11 @@ public class TianTianFundHandler extends FundRefreshHandler {
                 temp.add(() -> {
                     FundBean bean = null;
                     try {
+                        // jsonpgz({"fundcode":"001186","name":"富国文体健康股票A","jzrq":"2021-05-14","dwjz":"2.2760","gsz":"2.3142","gszzl":"1.68","gztime":"2021-05-17 11:30"});
                         String result = HttpClientPool.getHttpClient().get("http://fundgz.1234567.com.cn/js/" + s.getCode() + ".js?rt=" + System.currentTimeMillis());
                         String json = result.substring(8, result.length() - 2);
                         bean = gson.fromJson(json, FundBean.class);
-                        bean.setMoney(s.getMoney());
+                        bean.setHold(s.getHold());
                         bean.setNumber(s.getNumber());
                     } catch (Exception e) {
                         e.printStackTrace();

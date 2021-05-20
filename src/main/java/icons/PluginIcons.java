@@ -6,6 +6,9 @@ import javax.swing.*;
 
 public interface PluginIcons {
 
-    Icon ICON = IconLoader.getIcon("/icons/icon.png");
+    // 菠萝图标
+    Icon ICON = IconLoader.getIcon("/icons/boluo.png");
+
+//    Icon ICON = IconLoader.getIcon("/icons/icon.png");
 
 }

@@ -30,7 +30,8 @@ public class LazyyWindow implements ToolWindowFactory {
     private LazyyHelperSettings settings;
 
     private ShowWindow showWindow = new ShowWindow();
-//    private HtmlWindow htmlWindow = new HtmlWindow();
+
+    private NewsWindow newsWindow = new NewsWindow();
 
     FundRefreshHandler fundRefreshHandler;
 
@@ -38,11 +39,13 @@ public class LazyyWindow implements ToolWindowFactory {
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(mPanel, "lazyy", false);
-        Content other = contentFactory.createContent(showWindow.getShowPanel(), "kkanp", false);
+        Content lazy = contentFactory.createContent(mPanel, "lazyy", false);
+        Content news = contentFactory.createContent(newsWindow.getNewsPanel(), "newss", false);
+        Content kanPan = contentFactory.createContent(showWindow.getShowPanel(), "kkanp", false);
 
-        toolWindow.getContentManager().addContent(content);
-        toolWindow.getContentManager().addContent(other);
+        toolWindow.getContentManager().addContent(lazy);
+        toolWindow.getContentManager().addContent(news);
+        toolWindow.getContentManager().addContent(kanPan);
 
         LogUtil.setProject(project);
         logoLabel.setText(LazyyConstant.LABEL_LOGO);

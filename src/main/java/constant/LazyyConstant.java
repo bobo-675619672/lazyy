@@ -2,8 +2,14 @@ package constant;
 
 public class LazyyConstant {
 
-    public static final String LABEL_LOGO = "  Laz⚡⚡ V1.0.9";
+    /**
+     * 插件左下角显示
+     */
+    public static final String LABEL_LOGO = "  Laz⚡⚡ V1.0.11";
 
+    /**
+     * 看盘的指数代码
+     */
     public static final String[] KKP_CODES = {
             "sh000001",
             "sz399001",

@@ -1,7 +1,6 @@
 package setting.ui;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.table.JBTable;
 import model.DataSettings;
 import model.TypeAlias;
@@ -10,9 +9,7 @@ import storage.LazyyHelperSettings;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -23,7 +20,7 @@ public class AliasTable extends JBTable {
     private static final Logger log = Logger.getInstance(AliasTable.class);
     private static final int COLUMN_CODE = 0;
     private static final int COLUMN_NUMBER = 1;
-    private static final int COLUMN_MONEY = 2;
+    private static final int COLUMN_HOLD = 2;
     private static final int COLUMN_REMARK = 3;
     private final MyTableModel myTableModel = new MyTableModel();
 
@@ -36,7 +33,7 @@ public class AliasTable extends JBTable {
         setModel(myTableModel);
         TableColumn codeColumn = getColumnModel().getColumn(COLUMN_CODE);
         TableColumn numberColumn = getColumnModel().getColumn(COLUMN_NUMBER);
-        TableColumn moneyColumn = getColumnModel().getColumn(COLUMN_MONEY);
+        TableColumn moneyColumn = getColumnModel().getColumn(COLUMN_HOLD);
         TableColumn remarkColumn = getColumnModel().getColumn(COLUMN_REMARK);
 //        column.setCellRenderer(new DefaultTableCellRenderer() {
 //            @Override
@@ -76,7 +73,7 @@ public class AliasTable extends JBTable {
         final AliasEditor macroEditor = new AliasEditor("新增基金", "", "", "", "");
         if (macroEditor.showAndGet()) {
             final String name = macroEditor.getTitle();
-            typeAliases.add(new TypeAlias(macroEditor.getCode(), macroEditor.getNumber(), macroEditor.getMoney(), macroEditor.getRemark()));
+            typeAliases.add(new TypeAlias(macroEditor.getCode(), macroEditor.getNumber(), macroEditor.getHold(), macroEditor.getRemark()));
             final int index = indexOfAliasWithName(name);
             log.assertTrue(index >= 0);
             myTableModel.fireTableDataChanged();
@@ -166,11 +163,11 @@ public class AliasTable extends JBTable {
         }
         final int selectedRow = getSelectedRow();
         final TypeAlias typeAlias = typeAliases.get(selectedRow);
-        final AliasEditor editor = new AliasEditor("编辑基金", typeAlias.getCode(), typeAlias.getNumber(), typeAlias.getMoney(), typeAlias.getRemark());
+        final AliasEditor editor = new AliasEditor("编辑基金", typeAlias.getCode(), typeAlias.getNumber(), typeAlias.getHold(), typeAlias.getRemark());
         if (editor.showAndGet()) {
             typeAlias.setCode(editor.getCode());
             typeAlias.setNumber(editor.getNumber());
-            typeAlias.setMoney(editor.getMoney());
+            typeAlias.setHold(editor.getHold());
             typeAlias.setRemark(editor.getRemark());
             myTableModel.fireTableDataChanged();
         }
@@ -223,8 +220,8 @@ public class AliasTable extends JBTable {
                     return pair.getCode();
                 case COLUMN_NUMBER:
                     return pair.getNumber();
-                case COLUMN_MONEY:
-                    return pair.getMoney();
+                case COLUMN_HOLD:
+                    return pair.getHold();
                 case COLUMN_REMARK:
                     return pair.getRemark();
             }
@@ -243,8 +240,8 @@ public class AliasTable extends JBTable {
                     return "基金编码";
                 case COLUMN_NUMBER:
                     return "持有份数";
-                case COLUMN_MONEY:
-                    return "购买金额(暂不可用)";
+                case COLUMN_HOLD:
+                    return "持有价";
                 case COLUMN_REMARK:
                     return "备注";
             }
