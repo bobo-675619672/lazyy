@@ -106,9 +106,9 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
     private void loadDefaultGeneralSettings() {
         generalSettings = new GeneralSettings();
         generalSettings.setTime("10");
-        generalSettings.setHidenMoney(true);
-        generalSettings.setHidenTotalMoney(true);
-        generalSettings.setHidenHold(true);
+        generalSettings.setHiddenIncome(true);
+        generalSettings.setHiddenHold(true);
+        generalSettings.setHiddenFushi(true);
     }
 
 }

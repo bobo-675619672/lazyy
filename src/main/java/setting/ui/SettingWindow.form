@@ -33,7 +33,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="f08de" layout-manager="GridLayoutManager" row-count="5" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="f08de" layout-manager="GridLayoutManager" row-count="4" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="1" indent="0" use-parent-layout="false"/>
@@ -41,28 +41,12 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="64809" class="javax.swing.JCheckBox" binding="hidenCheckBox">
+                  <component id="64809" class="javax.swing.JCheckBox" binding="hiddenIncomeCheckBox">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <text value="隐藏估计收益"/>
-                    </properties>
-                  </component>
-                  <component id="47cab" class="javax.swing.JCheckBox" binding="hidenTotalCheckBox">
-                    <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="隐藏合计收益"/>
-                    </properties>
-                  </component>
-                  <component id="77d74" class="javax.swing.JCheckBox" binding="hidenFushiCheckBox">
-                    <constraints>
-                      <grid row="3" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="隐藏日志打印 富时A50指数"/>
+                      <text value="隐藏估计收益/合计收益"/>
                     </properties>
                   </component>
                   <component id="eb1d6" class="javax.swing.JCheckBox" binding="autoRefreshCheckBox">
@@ -95,12 +79,20 @@
                       </model>
                     </properties>
                   </component>
-                  <component id="8e224" class="javax.swing.JCheckBox" binding="hidenHoldCheckBox">
+                  <component id="8e224" class="javax.swing.JCheckBox" binding="hiddenHoldCheckBox">
                     <constraints>
-                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <text value="隐藏持有收益/收益率"/>
+                    </properties>
+                  </component>
+                  <component id="77d74" class="javax.swing.JCheckBox" binding="hiddenFushiCheckBox">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="隐藏日志打印 富时A50指数"/>
                     </properties>
                   </component>
                 </children>

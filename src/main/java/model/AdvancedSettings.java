@@ -1,5 +1,13 @@
 package model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * 常规设置
+ */
+@Getter
+@Setter
 public class AdvancedSettings extends DomainObject {
 
     private String openTime;
@@ -7,29 +15,5 @@ public class AdvancedSettings extends DomainObject {
     private String closeTime;
 
     private String newsCount;
-
-    public String getOpenTime() {
-        return openTime;
-    }
-
-    public void setOpenTime(String openTime) {
-        this.openTime = openTime;
-    }
-
-    public String getCloseTime() {
-        return closeTime;
-    }
-
-    public void setCloseTime(String closeTime) {
-        this.closeTime = closeTime;
-    }
-
-    public String getNewsCount() {
-        return newsCount;
-    }
-
-    public void setNewsCount(String newsCount) {
-        this.newsCount = newsCount;
-    }
 
 }

@@ -21,14 +21,13 @@ public class SettingWindow {
     private JTabbedPane tabbedPane1;
     private JPanel typeEditPenel;
     private JPanel templateEditPenel;
-    private JCheckBox hidenCheckBox;
+    private JCheckBox hiddenIncomeCheckBox;
     private JComboBox timeComboBox;
-    private JCheckBox hidenTotalCheckBox;
     private JTextField openTimeField;
     private JTextField closeTimeField;
-    private JCheckBox hidenFushiCheckBox;
+    private JCheckBox hiddenFushiCheckBox;
     private JCheckBox autoRefreshCheckBox;
-    private JCheckBox hidenHoldCheckBox;
+    private JCheckBox hiddenHoldCheckBox;
     private JTextField newsCountField;
 
     protected LazyyHelperSettings settings;
@@ -62,20 +61,18 @@ public class SettingWindow {
         // 常规设置
         boolean autoRefresh = this.settings.getGeneralSettings().isAutoRefresh();
         String time = this.settings.getGeneralSettings().getTime();
-        boolean hidenMoney = this.settings.getGeneralSettings().isHidenMoney();
-        boolean hidenTotalMoney = this.settings.getGeneralSettings().isHidenTotalMoney();
-        boolean hidenFushi = this.settings.getGeneralSettings().isHidenFushi();
-        boolean hidenHold = this.settings.getGeneralSettings().isHidenHold();
+        boolean hiddenMoney = this.settings.getGeneralSettings().isHiddenIncome();
+        boolean hiddenFushi = this.settings.getGeneralSettings().isHiddenFushi();
+        boolean hiddenHold = this.settings.getGeneralSettings().isHiddenHold();
         autoRefreshCheckBox.setSelected(autoRefresh);
         this.refreshAction();
         timeComboBox.setSelectedItem(time);
         // 失效
         autoRefreshCheckBox.addActionListener(a -> this.refreshAction());
 
-        hidenCheckBox.setSelected(hidenMoney);
-        hidenTotalCheckBox.setSelected(hidenTotalMoney);
-        hidenFushiCheckBox.setSelected(hidenFushi);
-        hidenHoldCheckBox.setSelected(hidenHold);
+        hiddenIncomeCheckBox.setSelected(hiddenMoney);
+        hiddenFushiCheckBox.setSelected(hiddenFushi);
+        hiddenHoldCheckBox.setSelected(hiddenHold);
         // 高级设置
         String openTime = this.settings.getAdvancedSettings().getOpenTime();
         String closeTime = this.settings.getAdvancedSettings().getCloseTime();
@@ -118,10 +115,9 @@ public class SettingWindow {
     public boolean isGeneralSettingsModified(GeneralSettings data) {
         if (!data.getTime().equals(timeComboBox.getSelectedItem().toString())
                 || data.isAutoRefresh() != autoRefreshCheckBox.isSelected()
-                || data.isHidenMoney() != hidenCheckBox.isSelected()
-                || data.isHidenTotalMoney() != hidenTotalCheckBox.isSelected()
-                || data.isHidenFushi() != hidenFushiCheckBox.isSelected()
-                || data.isHidenHold() != hidenHoldCheckBox.isSelected()) {
+                || data.isHiddenIncome() != hiddenIncomeCheckBox.isSelected()
+                || data.isHiddenFushi() != hiddenFushiCheckBox.isSelected()
+                || data.isHiddenHold() != hiddenHoldCheckBox.isSelected()) {
             return true;
         }
         return false;
@@ -146,10 +142,9 @@ public class SettingWindow {
     public GeneralSettings saveGeneralSettingsModified() {
         settings.getGeneralSettings().setAutoRefresh(autoRefreshCheckBox.isSelected());
         settings.getGeneralSettings().setTime(timeComboBox.getSelectedItem().toString());
-        settings.getGeneralSettings().setHidenMoney(hidenCheckBox.isSelected());
-        settings.getGeneralSettings().setHidenTotalMoney(hidenTotalCheckBox.isSelected());
-        settings.getGeneralSettings().setHidenFushi(hidenFushiCheckBox.isSelected());
-        settings.getGeneralSettings().setHidenHold(hidenHoldCheckBox.isSelected());
+        settings.getGeneralSettings().setHiddenIncome(hiddenIncomeCheckBox.isSelected());
+        settings.getGeneralSettings().setHiddenFushi(hiddenFushiCheckBox.isSelected());
+        settings.getGeneralSettings().setHiddenHold(hiddenHoldCheckBox.isSelected());
         return settings.getGeneralSettings();
     }
 

@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.dw'
-version '1.0.11'
+version '1.0.12'
 
 sourceCompatibility = 1.8
 
@@ -21,6 +21,8 @@ dependencies {
     compile 'com.github.promeg:tinypinyin:2.0.3' // TinyPinyin核心包，约80KB
     compile group: 'uk.com.robust-it', name: 'cloning', version: '1.9.12'
     compile 'joda-time:joda-time:2.9.9'
+    implementation 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
@@ -86,7 +88,7 @@ patchPluginXml {
         &nbsp;&nbsp;|3.1 更换插件图标<br>
         &nbsp;&nbsp;|3.2 优化线程部分代码<br>
       """*/
-    changeNotes """
+/*    changeNotes """
         v1.0.11<br>
         &nbsp;|1.新增新闻newss页面<br>
         &nbsp;&nbsp;|1.1 新增东方财富新闻<br>
@@ -95,6 +97,16 @@ patchPluginXml {
         &nbsp;&nbsp;|1.4 高级设置可填新闻条数<br>
         &nbsp;|2.页面优化<br>
         &nbsp;&nbsp;|2.1 面板表格设置不可编辑<br>
+      """*/
+    changeNotes """
+        v1.0.12<br>
+        &nbsp;|1.重构Lazyy代码<br>
+        &nbsp;&nbsp;|1.1 历史遗留问题,出现卡顿,丢失数据问题<br>
+        &nbsp;&nbsp;|1.2 引入lombok简化代码
+        &nbsp;|2.页面优化<br>
+        &nbsp;&nbsp;|2.1 隐藏估计收益/合计收益 合并<br>
+        &nbsp;&nbsp;|2.2 隐藏估计收益/合计收益 勾选后Lazyy页面隐藏"估算收益"一列<br>
+        &nbsp;&nbsp;|2.3 隐藏持有收益/持有收益率 勾选后Lazyy页面隐藏"持有收益/持有收益率"两列<br>
       """
     sinceBuild '173.*'
     untilBuild '202.*'

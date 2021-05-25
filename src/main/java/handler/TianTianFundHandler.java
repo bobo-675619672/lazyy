@@ -25,8 +25,6 @@ public class TianTianFundHandler extends FundRefreshHandler {
 
     private static Gson gson = new Gson();
 
-    private List<TypeAlias> codes = new ArrayList<>();
-
     private CommonThreadPool commonThreadPool = CommonThreadPool.getInstance();
 
     private LazyyHelperSettings settings;
@@ -34,6 +32,7 @@ public class TianTianFundHandler extends FundRefreshHandler {
     private volatile Thread worker;
 
     private volatile String time;
+
     private volatile boolean autoRunFlag;
 
     public TianTianFundHandler(JTable table, JLabel label1, JLabel label2) {
@@ -79,39 +78,27 @@ public class TianTianFundHandler extends FundRefreshHandler {
     }
 
     @Override
-    public void refresh(String flag, List<TypeAlias> code) {
-        switch (flag) {
-            case LazyyConstant.REFRESH_INIT:
-                // 初始化
-                LogUtil.info("Lazyy 初始化基金数据.");
-                break;
-            case LazyyConstant.REFRESH_UPDATE:
-                // 手动更新
-                LogUtil.info("Lazyy 手动更新基金数据.");
-                break;
-            default:
-                break;
-        }
-        super.clear();
-        codes.clear();
-        codes.addAll(code);
-        //排序，按加入顺序
-        for (TypeAlias s : codes) {
-            updateData(new FundBean(s));
-        }
-        stepAction();
+    public void refresh() {
+        // 上证指数更新
         updateSha();
+        // 打印富时A50
         printlnFushi();
+        // 更新Lazyy面板数据
+        stepAction();
+        // 自动刷新
         autoRefresh();
     }
 
     private void stepAction() {
+        super.clear();
+        // 基金数据列表
+        List<TypeAlias> codes = settings.getDateSettings().getTypeAliases();
         if (codes.isEmpty()) {
             LogUtil.info("Lazyy 基金数据为空...");
             return;
         }
         // 批量更新基金信息
-        List<FundBean> beans = commonThreadPool.executeTasks(()->{
+        List<FundBean> beans = commonThreadPool.executeTasks(() -> {
             List<Supplier<FundBean>> temp = Lists.newArrayListWithCapacity(codes.size());
             codes.stream().forEach(s -> {
                 temp.add(() -> {
@@ -131,13 +118,25 @@ public class TianTianFundHandler extends FundRefreshHandler {
             });
             return temp;
         });
-        updateDatas(beans);
+        // 排序
+        List<FundBean> result = Lists.newArrayListWithCapacity(codes.size());
+        for (TypeAlias code : codes) {
+            for (FundBean bean : beans) {
+                if (code.getCode().equals(bean.getFundCode())) {
+                    result.add(bean);
+                    break;
+                }
+            }
+        }
+        // 覆盖数据
+        updateData(result);
+        // 更新UI
         updateUI();
     }
 
     private void printlnFushi() {
         // 是否打印富时A50
-        if (settings.getGeneralSettings().isHidenFushi()) {
+        if (settings.getGeneralSettings().isHiddenFushi()) {
             return;
         }
         commonThreadPool.execute(() -> {

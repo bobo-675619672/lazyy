@@ -2,24 +2,37 @@ package model;
 
 import com.google.gson.annotations.SerializedName;
 import constant.LazyyConstant;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class FundBean {
+
     @SerializedName("fundcode")
     private String fundCode;
     @SerializedName("name")
     private String fundName;
-    private String jzrq;//净值日期
-    private String dwjz;//当日净值
-    private String gsz; //估算净值
-    private String gszzl;//估算涨跌百分比 即-0.42%
-    private String gztime;//gztime估值时间
-    private String hold;//持有价
-    private String number;//份数
-
-    public FundBean() {
-    }
+    // 净值日期
+    private String jzrq;
+    // 当日净值
+    private String dwjz;
+    // 估算净值
+    private String gsz;
+    // 估算涨跌百分比 即-0.42%
+    private String gszzl;
+    // gztime估值时间
+    private String gztime;
+    // 持有价
+    private String hold;
+    // 份数
+    private String number;
 
     public FundBean(String fundCode) {
         this.fundCode = fundCode;
@@ -31,79 +44,6 @@ public class FundBean {
         this.hold = alias.getHold();
         this.number = alias.getNumber();
         this.fundName = "";
-    }
-
-
-    public String getFundCode() {
-        return fundCode;
-    }
-
-    public void setFundCode(String fundCode) {
-        this.fundCode = fundCode;
-    }
-
-    public String getFundName() {
-        return fundName;
-    }
-
-    public void setFundName(String fundName) {
-        this.fundName = fundName;
-    }
-
-    public String getJzrq() {
-        return jzrq;
-    }
-
-    public void setJzrq(String jzrq) {
-        this.jzrq = jzrq;
-    }
-
-    public String getDwjz() {
-        return dwjz;
-    }
-
-    public void setDwjz(String dwjz) {
-        this.dwjz = dwjz;
-    }
-
-    public String getGsz() {
-        return gsz;
-    }
-
-    public void setGsz(String gsz) {
-        this.gsz = gsz;
-    }
-
-    public String getGszzl() {
-        return gszzl;
-    }
-
-    public void setGszzl(String gszzl) {
-        this.gszzl = gszzl;
-    }
-
-    public String getGztime() {
-        return gztime;
-    }
-
-    public void setGztime(String gztime) {
-        this.gztime = gztime;
-    }
-
-    public String getHold() {
-        return hold;
-    }
-
-    public void setHold(String hold) {
-        this.hold = hold;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
     }
 
     @Override

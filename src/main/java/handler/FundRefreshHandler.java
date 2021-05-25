@@ -27,7 +27,9 @@ public abstract class FundRefreshHandler {
     private JTable table;
     private JLabel label1;
     private JLabel label2;
+
     private int[] sizes = new int[]{80, 180, 80, 80, 80, 80, 80};
+    private String[] columnNames = {"基金编码", "基金名称", "估算涨跌", "估算收益", "持有收益", "持有收益率", "更新时间"};
 
     private LazyyHelperSettings settings;
 
@@ -43,7 +45,7 @@ public abstract class FundRefreshHandler {
         settings = ServiceManager.getService(LazyyHelperSettings.class);
     }
 
-    public abstract void refresh(String flag, List<TypeAlias> code);
+    public abstract void refresh();
 
     public abstract void autoRefresh();
 
@@ -51,33 +53,21 @@ public abstract class FundRefreshHandler {
      * 更新全部数据
      */
     public void updateUI() {
-        SwingUtilities.invokeLater(() -> {
-            recordTableSize();
-            String[] columnNames = {"基金编码", "基金名称", "估算涨跌", "估算收益", "持有收益", "持有收益率", "更新时间"};
-            DefaultTableModel model = new DefaultTableModel() {
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            };
-            model.setDataVector(convertData(), columnNames);
-            table.setModel(model);
-            updateColors();
-            resizeTable();
-        });
-    }
-
-    private void recordTableSize() {
-        if (table.getColumnModel().getColumnCount() == 0) {
-            return;
-        }
-        for (int i = 0; i < sizes.length; i++) {
-            sizes[i] = table.getColumnModel().getColumn(i).getWidth();
-        }
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // 不可编辑
+                return false;
+            }
+        };
+        model.setDataVector(this.convertData(), getColumn(columnNames));
+        table.setModel(model);
+        updateColors();
+        resizeTable();
     }
 
     private void resizeTable() {
-        for (int i = 0; i < sizes.length; i++) {
+        for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
             if (sizes[i] > 0) {
                 table.getColumnModel().getColumn(i).setWidth(sizes[i]);
                 table.getColumnModel().getColumn(i).setPreferredWidth(sizes[i]);
@@ -92,12 +82,16 @@ public abstract class FundRefreshHandler {
         4:持有收益
         5:持有收益率
          */
-        updateColors(Lists.newArrayList(
-                table.getColumn(table.getColumnName(2)),
-                table.getColumn(table.getColumnName(3)),
-                table.getColumn(table.getColumnName(4)),
-                table.getColumn(table.getColumnName(5))
-        ));
+        List<TableColumn> list = Lists.newArrayList();
+        list.add(table.getColumn(table.getColumnName(2)));
+        if (!settings.getGeneralSettings().isHiddenIncome()) {
+            list.add(table.getColumn(table.getColumnName(3)));
+        }
+        if (!settings.getGeneralSettings().isHiddenHold()) {
+            list.add(table.getColumn(table.getColumnName(4)));
+            list.add(table.getColumn(table.getColumnName(5)));
+        }
+        updateColors(list);
     }
 
     private void updateColors(List<TableColumn> columns) {
@@ -129,19 +123,9 @@ public abstract class FundRefreshHandler {
         }
     }
 
-    protected void updateData(FundBean bean) {
-        int index = data.indexOf(bean);
-        if (index >= 0) {
-            data.set(index, bean);
-        } else {
-            data.add(bean);
-        }
-    }
-
-    protected void updateDatas(List<FundBean> beans) {
-        for (FundBean bean : beans) {
-            updateData(bean);
-        }
+    protected void updateData(List<FundBean> beans) {
+        data.clear();
+        data.addAll(beans);
     }
 
     protected void updateShaLabel(String[] sha) {
@@ -177,16 +161,15 @@ public abstract class FundRefreshHandler {
 
     private Object[][] convertData() {
         // 隐藏收益
-        boolean hidenMoney = settings.getGeneralSettings().isHidenMoney();
-        boolean hidenTotalMoney = settings.getGeneralSettings().isHidenTotalMoney();
+        boolean hiddenIncome = settings.getGeneralSettings().isHiddenIncome();
         // 持有收益/率
-        boolean hidenHold = settings.getGeneralSettings().isHidenHold();
+        boolean hiddenHold = settings.getGeneralSettings().isHiddenHold();
         int size = data.size();
-        if (!hidenTotalMoney) {
+        if (!hiddenIncome) {
             // 显示总数 大小+1
             size += 1;
         }
-        Double totalMoney = 0D;
+        Double totalIncome = 0D;
         Double totalHold = 0D;
         Object[][] temp = new Object[size][];
         for (int i = 0; i < data.size(); i++) {
@@ -212,17 +195,17 @@ public abstract class FundRefreshHandler {
             }
             // 估算收益
             String gslrStr = LazyyConstant.NONE_SHOW;
-            if (!hidenMoney && StringUtils.isNotEmpty(fundBean.getNumber())) {
+            if (!hiddenIncome && StringUtils.isNotEmpty(fundBean.getNumber())) {
                 Double number = Double.valueOf(fundBean.getNumber());
                 // 估算收益 = 持有份数 * (估算净值 - 当日净值)
                 double tempMoney = number * (gsz - dwjz);
-                totalMoney += tempMoney;
+                totalIncome += tempMoney;
                 gslrStr = String.format("%.2f", tempMoney);
             }
             // 持有收益、持有收益率
             String holdStr = LazyyConstant.NONE_SHOW;
             String holdRateStr = LazyyConstant.NONE_SHOW;
-            if (!hidenHold&& StringUtils.isNotEmpty(fundBean.getNumber()) && StringUtils.isNotEmpty(fundBean.getHold())) {
+            if (!hiddenHold && StringUtils.isNotEmpty(fundBean.getNumber()) && StringUtils.isNotEmpty(fundBean.getHold())) {
                 Double number = Double.valueOf(fundBean.getNumber());
                 Double hold = Double.valueOf(fundBean.getHold());
                 // 持有收益 = 持有份数 * (当日净值 - 持有成本价)
@@ -234,33 +217,54 @@ public abstract class FundRefreshHandler {
                 holdStr = String.format("%.2f", holdMoney);
                 holdRateStr = String.format("%.2f", holdRate) + "%";
             }
-            temp[i] = new Object[]{
+            temp[i] = getColumn(new Object[]{
                     fundBean.getFundCode(),
                     fundBean.getFundName(),
                     gszzlStr + "%",
                     gslrStr,
                     holdStr,
                     holdRateStr,
-                    timeStr};
-        }
-        String totalHoldStr = LazyyConstant.NONE_SHOW;
-        if (0D != totalHold) {
-            totalHoldStr = String.format("%.2f", totalHold);
+                    timeStr
+            });
         }
         // 增加合计收益
-        if (!hidenTotalMoney) {
-            temp[size - 1] = new Object[]{
+        if (!hiddenIncome) {
+            String totalHoldStr = LazyyConstant.NONE_SHOW;
+            if (0D != totalHold) {
+                totalHoldStr = String.format("%.2f", totalHold);
+            }
+            temp[size - 1] = getColumn(new Object[]{
                     LazyyConstant.NONE_SHOW,
                     "合计:",
                     LazyyConstant.NONE_SHOW,
-                    String.format("%.2f", totalMoney),
+                    String.format("%.2f", totalIncome),
                     totalHoldStr,
                     LazyyConstant.NONE_SHOW,
-                    LazyyConstant.NONE_SHOW};
+                    LazyyConstant.NONE_SHOW
+            });
         }
         return temp;
     }
 
+    private Object[] getColumn(Object[] objects) {
+        // 隐藏收益
+        boolean hiddenIncome = settings.getGeneralSettings().isHiddenIncome();
+        // 持有收益/率
+        boolean hiddenHold = settings.getGeneralSettings().isHiddenHold();
+        List<Object> nameList = Lists.newArrayListWithCapacity(objects.length);
+        nameList.add(objects[0]);
+        nameList.add(objects[1]);
+        nameList.add(objects[2]);
+        if (!hiddenIncome) {
+            nameList.add(objects[3]);
+        }
+        if (!hiddenHold) {
+            nameList.add(objects[4]);
+            nameList.add(objects[5]);
+        }
+        nameList.add(objects[6]);
+        return nameList.toArray();
+    }
 
     public boolean canNowRefresh() {
         String curDate = DateUtil.getCurDateStr();
