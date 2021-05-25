@@ -107,6 +107,7 @@ patchPluginXml {
         &nbsp;&nbsp;|2.1 隐藏估计收益/合计收益 合并<br>
         &nbsp;&nbsp;|2.2 隐藏估计收益/合计收益 勾选后Lazyy页面隐藏"估算收益"一列<br>
         &nbsp;&nbsp;|2.3 隐藏持有收益/持有收益率 勾选后Lazyy页面隐藏"持有收益/持有收益率"两列<br>
+        &nbsp;&nbsp;|2.4 增加高级设置Lazyy面板刷新按钮时间间隔,避免网络请求过快被封IP<br>
       """
     sinceBuild '173.*'
     untilBuild '202.*'

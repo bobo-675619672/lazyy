@@ -29,6 +29,7 @@ public class SettingWindow {
     private JCheckBox autoRefreshCheckBox;
     private JCheckBox hiddenHoldCheckBox;
     private JTextField newsCountField;
+    private JTextField refreshTimeField;
 
     protected LazyyHelperSettings settings;
     private AliasTable aliasTable;
@@ -77,9 +78,11 @@ public class SettingWindow {
         String openTime = this.settings.getAdvancedSettings().getOpenTime();
         String closeTime = this.settings.getAdvancedSettings().getCloseTime();
         String newsCount = this.settings.getAdvancedSettings().getNewsCount();
+        String refreshTime = this.settings.getAdvancedSettings().getRefreshTime();
         openTimeField.setText(openTime);
         closeTimeField.setText(closeTime);
         newsCountField.setText(newsCount);
+        refreshTimeField.setText(refreshTime);
     }
 
     public LazyyHelperSettings getSettings() {
@@ -126,7 +129,8 @@ public class SettingWindow {
     public boolean isAdvancedSettingsModified(AdvancedSettings data) {
         if (!data.getOpenTime().equals(openTimeField.getText())
                 || !data.getCloseTime().equals(closeTimeField.getText())
-                || !data.getNewsCount().equals(newsCountField.getText())) {
+                || !data.getNewsCount().equals(newsCountField.getText())
+                || !data.getRefreshTime().equals(refreshTimeField.getText())) {
             return true;
         }
         return false;
@@ -136,6 +140,7 @@ public class SettingWindow {
         settings.getAdvancedSettings().setOpenTime(openTimeField.getText());
         settings.getAdvancedSettings().setCloseTime(closeTimeField.getText());
         settings.getAdvancedSettings().setNewsCount(newsCountField.getText());
+        settings.getAdvancedSettings().setRefreshTime(refreshTimeField.getText());
         return settings.getAdvancedSettings();
     }
 

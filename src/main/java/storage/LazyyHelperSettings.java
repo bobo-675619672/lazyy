@@ -101,6 +101,7 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
         advancedSettings.setOpenTime("09:00:00");
         advancedSettings.setCloseTime("15:00:00");
         advancedSettings.setNewsCount("20");
+        advancedSettings.setRefreshTime("3");
     }
 
     private void loadDefaultGeneralSettings() {

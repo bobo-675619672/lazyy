@@ -16,4 +16,6 @@ public class AdvancedSettings extends DomainObject {
 
     private String newsCount;
 
+    private String refreshTime;
+
 }

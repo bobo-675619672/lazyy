@@ -175,9 +175,8 @@ public class AliasTable extends JBTable {
     }
 
     public boolean isModified(DataSettings settings) {
-        final List<TypeAlias> aliases = new LinkedList<>();
-        obtainAliases(aliases, settings);
-        return !aliases.equals(typeAliases);
+        // 由于每次编辑都会保存数据，所以没办法判断是否改动
+        return false;
     }
 
     //==========================================================================//

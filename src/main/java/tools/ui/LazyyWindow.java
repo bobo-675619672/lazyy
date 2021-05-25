@@ -1,5 +1,6 @@
 package tools.ui;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -9,9 +10,15 @@ import constant.LazyyConstant;
 import handler.FundRefreshHandler;
 import handler.TianTianFundHandler;
 import org.jetbrains.annotations.NotNull;
+import storage.LazyyHelperSettings;
 import util.LogUtil;
 
 import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LazyyWindow implements ToolWindowFactory {
 
@@ -27,6 +34,8 @@ public class LazyyWindow implements ToolWindowFactory {
     private NewsWindow newsWindow = new NewsWindow();
 
     FundRefreshHandler fundRefreshHandler;
+
+    private LazyyHelperSettings settings;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -50,7 +59,25 @@ public class LazyyWindow implements ToolWindowFactory {
     @Override
     public void init(ToolWindow window) {
         fundRefreshHandler = new TianTianFundHandler(table1, aLabel, bLabel);
-        refreshButton.addActionListener(a -> fundRefreshHandler.refresh());
+        settings = ServiceManager.getService(LazyyHelperSettings.class);
+        // 刷新间隔
+        refreshButton.addActionListener(a -> {
+            fundRefreshHandler.refresh();
+            // 设置倒计时
+            int refreshTime = Integer.valueOf(settings.getAdvancedSettings().getRefreshTime());
+            AtomicInteger time = new AtomicInteger(refreshTime);
+            ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+            exec.scheduleAtFixedRate(() -> {
+                refreshButton.setEnabled(false);
+                refreshButton.setText("等待(" + time + "s)");
+                time.getAndDecrement();
+                if (time.intValue() < 0) {
+                    exec.shutdown();
+                    refreshButton.setEnabled(true);
+                    refreshButton.setText("刷新");
+                }
+            },0,1, TimeUnit.SECONDS);
+        });
     }
 
     @Override
