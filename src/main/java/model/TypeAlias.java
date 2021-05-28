@@ -24,7 +24,12 @@ public class TypeAlias extends DomainObject {
 
     @Override
     public String toString() {
-        return String.format("%s - %s - %s - %s", this.code, this.number, this.hold, this.remark);
+        return "TypeAlias{" +
+                "code='" + code + '\'' +
+                ", number='" + number + '\'' +
+                ", hold='" + hold + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
     }
 
     @Override

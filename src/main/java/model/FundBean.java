@@ -47,6 +47,21 @@ public class FundBean {
     }
 
     @Override
+    public String toString() {
+        return "FundBean{" +
+                "fundCode='" + fundCode + '\'' +
+                ", fundName='" + fundName + '\'' +
+                ", jzrq='" + jzrq + '\'' +
+                ", dwjz='" + dwjz + '\'' +
+                ", gsz='" + gsz + '\'' +
+                ", gszzl='" + gszzl + '\'' +
+                ", gztime='" + gztime + '\'' +
+                ", hold='" + hold + '\'' +
+                ", number='" + number + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

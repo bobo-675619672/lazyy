@@ -6,6 +6,7 @@ import com.intellij.openapi.components.ServiceManager;
 import constant.LazyyConstant;
 import model.FundBean;
 import model.TypeAlias;
+import org.apache.commons.lang3.StringUtils;
 import storage.LazyyHelperSettings;
 import util.HttpClientPool;
 import util.LogUtil;
@@ -121,7 +122,17 @@ public class TianTianFundHandler extends FundRefreshHandler {
         // 排序
         List<FundBean> result = Lists.newArrayListWithCapacity(codes.size());
         for (TypeAlias code : codes) {
+            // 为空，网络问题
+            if (StringUtils.isEmpty(code.getCode())) {
+                LogUtil.info("网络问题:" + code.toString());
+                continue;
+            }
             for (FundBean bean : beans) {
+                // 为空，网络问题
+                if (StringUtils.isEmpty(bean.getFundCode())) {
+                    LogUtil.info("网络问题:" + bean.toString());
+                    continue;
+                }
                 if (code.getCode().equals(bean.getFundCode())) {
                     result.add(bean);
                     break;
