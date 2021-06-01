@@ -123,13 +123,13 @@ public class TianTianFundHandler extends FundRefreshHandler {
         List<FundBean> result = Lists.newArrayListWithCapacity(codes.size());
         for (TypeAlias code : codes) {
             // 为空，网络问题
-            if (StringUtils.isEmpty(code.getCode())) {
+            if (null == code || StringUtils.isEmpty(code.getCode())) {
                 LogUtil.info("网络问题:" + code.toString());
                 continue;
             }
             for (FundBean bean : beans) {
                 // 为空，网络问题
-                if (StringUtils.isEmpty(bean.getFundCode())) {
+                if (null == bean || StringUtils.isEmpty(bean.getFundCode())) {
                     LogUtil.info("网络问题:" + bean.toString());
                     continue;
                 }
