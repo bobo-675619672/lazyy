@@ -46,10 +46,10 @@ public class LazyyWindow implements ToolWindowFactory {
         Content news = contentFactory.createContent(newsWindow.getNewsPanel(), "newss", false);
         // 大盘面板
         Content kanPan = contentFactory.createContent(showWindow.getShowPanel(), "kkanp", false);
-        // 设置
+        // 设置,这里添加顺序决定显示顺序 左到右
         toolWindow.getContentManager().addContent(lazy);
-        toolWindow.getContentManager().addContent(news);
         toolWindow.getContentManager().addContent(kanPan);
+        toolWindow.getContentManager().addContent(news);
 
         LogUtil.setProject(project);
         // logo

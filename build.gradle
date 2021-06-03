@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.dw'
-version '1.0.12'
+version '1.0.13'
 
 sourceCompatibility = 1.8
 
@@ -98,7 +98,7 @@ patchPluginXml {
         &nbsp;|2.页面优化<br>
         &nbsp;&nbsp;|2.1 面板表格设置不可编辑<br>
       """*/
-    changeNotes """
+/*    changeNotes """
         v1.0.12<br>
         &nbsp;|1.重构Lazyy代码<br>
         &nbsp;&nbsp;|1.1 历史遗留问题,出现卡顿,丢失数据问题<br>
@@ -108,6 +108,13 @@ patchPluginXml {
         &nbsp;&nbsp;|2.2 隐藏估计收益/合计收益 勾选后Lazyy页面隐藏"估算收益"一列<br>
         &nbsp;&nbsp;|2.3 隐藏持有收益/持有收益率 勾选后Lazyy页面隐藏"持有收益/持有收益率"两列<br>
         &nbsp;&nbsp;|2.4 增加高级设置Lazyy面板刷新按钮时间间隔,避免网络请求过快被封IP<br>
+      """*/
+    changeNotes """
+        v1.0.13<br>
+        &nbsp;|1.看盘页面<br>
+        &nbsp;&nbsp;|1.1 增加分时(默认)/日K/周K/月K<br>
+        &nbsp;|2.页面优化<br>
+        &nbsp;&nbsp;|2.1 新闻页面不常用,放到最右<br>
       """
     sinceBuild '173.*'
     untilBuild '202.*'

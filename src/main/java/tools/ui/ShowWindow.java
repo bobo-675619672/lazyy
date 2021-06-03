@@ -1,6 +1,5 @@
 package tools.ui;
 
-import com.intellij.ui.content.ContentFactory;
 import constant.LazyyConstant;
 import util.LogUtil;
 import util.thread.CommonThreadPool;
@@ -8,7 +7,6 @@ import util.thread.CommonThreadPool;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.net.URL;
 
 public class ShowWindow {
@@ -17,7 +15,8 @@ public class ShowWindow {
     private JLabel sLabel;
     private JButton refreshButton;
     private JLabel logoLabel;
-    private JComboBox kanComboBox;
+    private JComboBox codeComboBox;
+    private JComboBox typeComboBox;
 
     private CommonThreadPool commonThreadPool = CommonThreadPool.getInstance();
 
@@ -27,7 +26,12 @@ public class ShowWindow {
             this.onInit();
         });
         // 添加切换事件
-        kanComboBox.addItemListener(e -> {
+        codeComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                this.onInit();
+            }
+        });
+        typeComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 this.onInit();
             }
@@ -38,18 +42,21 @@ public class ShowWindow {
     public void onInit() {
         // 线程执行
         commonThreadPool.execute(() -> {
-            int index = kanComboBox.getSelectedIndex();
-            String name = kanComboBox.getSelectedItem().toString();
+            int codeIndex = codeComboBox.getSelectedIndex();
+            String code = codeComboBox.getSelectedItem().toString();
+            int typeIndex = typeComboBox.getSelectedIndex();
+            String type = typeComboBox.getSelectedItem().toString();
+            if (codeIndex >= LazyyConstant.KKP_CODES.length || typeIndex >= LazyyConstant.KKP_TYPES.length) {
+                LogUtil.info("数据异常,不刷新!");
+                return;
+            }
+            String url = "http://image.sinajs.cn/newchart/" + LazyyConstant.KKP_TYPES[typeIndex] + "/n/" + LazyyConstant.KKP_CODES[codeIndex] + ".gif";
             try {
-                if (index >= LazyyConstant.KKP_CODES.length) {
-                    LogUtil.info("数据异常,不刷新!");
-                    return;
-                }
-                ImageIcon background = new ImageIcon(ImageIO.read(new URL("http://image.sinajs.cn/newchart/min/n/" + LazyyConstant.KKP_CODES[index] + ".gif")));
+                ImageIcon background = new ImageIcon(ImageIO.read(new URL(url)));
                 sLabel.setIcon(background);
-                LogUtil.info(name + "数据更新成功!");
+                LogUtil.info(code + " " + type + " 数据更新成功!");
             } catch (Exception e) {
-                LogUtil.info(name + "数据更新失败!");
+                LogUtil.info(code + " " + type + " 数据更新失败! -> URL: " + url);
             }
         });
     }
