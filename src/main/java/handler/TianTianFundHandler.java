@@ -53,12 +53,12 @@ public class TianTianFundHandler extends FundRefreshHandler {
             if (super.canNowRefresh()) {
                 LogUtil.info("Lazyy 开启自动刷新基金数据.时间间隔:" + time + "分钟!");
             } else {
-                LogUtil.info("Lazyy 不在时间段,关闭自动刷新.");
+//                LogUtil.info("Lazyy 不在时间段,关闭自动刷新.");
                 autoRunFlag = false;
                 return;
             }
         } else {
-            LogUtil.info("Lazyy 关闭自动刷新基金数据.");
+//            LogUtil.info("Lazyy 关闭自动刷新基金数据.");
             return;
         }
         worker = new Thread(() -> {
@@ -124,13 +124,13 @@ public class TianTianFundHandler extends FundRefreshHandler {
         for (TypeAlias code : codes) {
             // 为空，网络问题
             if (null == code || StringUtils.isEmpty(code.getCode())) {
-                LogUtil.info("网络问题:" + code.toString());
+                LogUtil.info("网络问题,稍后刷新!");
                 continue;
             }
             for (FundBean bean : beans) {
                 // 为空，网络问题
                 if (null == bean || StringUtils.isEmpty(bean.getFundCode())) {
-                    LogUtil.info("网络问题:" + bean.toString());
+                    LogUtil.info("网络问题,稍后刷新!");
                     continue;
                 }
                 if (code.getCode().equals(bean.getFundCode())) {

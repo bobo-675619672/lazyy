@@ -31,4 +31,12 @@ public class LazyyConstant {
      */
     public static final String NONE_SHOW = "--";
 
+    /**
+     * 默认设置
+     */
+    public static final String DEFAULT_OPEN_TIME = "09:00:00";
+    public static final String DEFAULT_CLOSE_TIME = "15:00:00";
+    public static final String DEFAULT_NEWS_COUNT = "20";
+    public static final String DEFAULT_REFRESH_TIME = "3";
+
 }

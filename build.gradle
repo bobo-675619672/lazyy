@@ -115,6 +115,7 @@ patchPluginXml {
         &nbsp;&nbsp;|1.1 增加分时(默认)/日K/周K/月K<br>
         &nbsp;|2.页面优化<br>
         &nbsp;&nbsp;|2.1 新闻页面不常用,放到最右<br>
+        &nbsp;|3.代码优化<br>
       """
     sinceBuild '173.*'
     untilBuild '202.*'

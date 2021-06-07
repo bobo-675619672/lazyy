@@ -6,6 +6,7 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.rits.cloning.Cloner;
+import constant.LazyyConstant;
 import model.AdvancedSettings;
 import model.DataSettings;
 import model.GeneralSettings;
@@ -98,10 +99,10 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
 
     private void loadDefaultAdvancedSettings() {
         advancedSettings = new AdvancedSettings();
-        advancedSettings.setOpenTime("09:00:00");
-        advancedSettings.setCloseTime("15:00:00");
-        advancedSettings.setNewsCount("20");
-        advancedSettings.setRefreshTime("3");
+        advancedSettings.setOpenTime(LazyyConstant.DEFAULT_OPEN_TIME);
+        advancedSettings.setCloseTime(LazyyConstant.DEFAULT_CLOSE_TIME);
+        advancedSettings.setNewsCount(LazyyConstant.DEFAULT_NEWS_COUNT);
+        advancedSettings.setRefreshTime(LazyyConstant.DEFAULT_REFRESH_TIME);
     }
 
     private void loadDefaultGeneralSettings() {
