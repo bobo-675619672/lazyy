@@ -1,9 +1,6 @@
 package model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -21,6 +18,8 @@ public class TypeAlias extends DomainObject {
     public String hold;
     // 备注
     public String remark;
+    // 更新时间
+    public String updated;
 
     @Override
     public String toString() {
@@ -29,6 +28,7 @@ public class TypeAlias extends DomainObject {
                 ", number='" + number + '\'' +
                 ", hold='" + hold + '\'' +
                 ", remark='" + remark + '\'' +
+                ", updated='" + updated + '\'' +
                 '}';
     }
 
@@ -47,12 +47,13 @@ public class TypeAlias extends DomainObject {
         return Objects.equals(code, alias.code) &&
                 Objects.equals(number, alias.number) &&
                 Objects.equals(hold, alias.hold) &&
-                Objects.equals(remark, alias.remark);
+                Objects.equals(remark, alias.remark) &&
+                Objects.equals(updated, alias.updated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), code, number, hold, remark);
+        return Objects.hash(super.hashCode(), code, number, hold, remark, updated);
     }
 
 }
