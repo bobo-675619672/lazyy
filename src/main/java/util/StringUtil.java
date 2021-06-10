@@ -1,5 +1,7 @@
 package util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,8 +33,18 @@ public class StringUtil {
         return href;
     }
 
+    public static boolean isNumber(String num) {
+        if (StringUtils.isEmpty(num)) {
+            return false;
+        }
+        String regex = "\\d+(\\.\\d+)?";
+        return num.matches(regex);
+    }
+
 //    public static void main(String[] args) {
-//        System.out.println(getHref("<html><u><a href='111'>222</a></u></html>"));
+//        System.out.println(isNumber("1.1.2"));
+//        System.out.println(isNumber("0.2"));
+//        System.out.println(isNumber("2"));
 //    }
 
 }

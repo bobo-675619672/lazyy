@@ -173,19 +173,6 @@ public class AliasTable extends JBTable {
         return false;
     }
 
-    //==========================================================================//
-
-    /**
-     * EditValidator
-     */
-    private static class EditValidator implements AliasEditor.Validator {
-        @Override
-        public boolean isOK(String name, String value) {
-            return !name.isEmpty() && !value.isEmpty();
-        }
-    }
-
-
     /**
      * MyTableModel
      */
@@ -220,9 +207,10 @@ public class AliasTable extends JBTable {
                     return pair.getRemark();
                 case COLUMN_UPDATED:
                     return pair.getUpdated();
+                default:
+                    log.error("Wrong indices");
+                    return null;
             }
-            log.error("Wrong indices");
-            return null;
         }
 
         @Override
@@ -242,8 +230,10 @@ public class AliasTable extends JBTable {
                     return "备注";
                 case COLUMN_UPDATED:
                     return "更新时间";
+                default:
+                    log.error("Wrong indices");
+                    return null;
             }
-            return null;
         }
 
         @Override
