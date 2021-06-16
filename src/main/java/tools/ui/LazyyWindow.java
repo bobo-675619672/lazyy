@@ -14,6 +14,11 @@ import storage.LazyyHelperSettings;
 import util.LogUtil;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -58,6 +63,32 @@ public class LazyyWindow implements ToolWindowFactory {
 
     @Override
     public void init(ToolWindow window) {
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        // 注册应用程序全局键盘事件, 所有的键盘事件都会被此事件监听器处理.
+        toolkit.addAWTEventListener(
+                event -> {
+                    if (event.getClass() == KeyEvent.class) {
+                        KeyEvent kE = ((KeyEvent) event);
+
+                        if (kE.getKeyCode() == KeyEvent.VK_Q
+                                && kE.isAltDown()
+                                && (kE.getID() == KeyEvent.KEY_PRESSED || kE.getID() == KeyEvent.KEY_RELEASED)) {
+                            boolean bossKey = settings.getGeneralSettings().isBossKey();
+                            // 开启 老板键
+                            if (bossKey) {
+                                // 切换 显示 | 隐藏
+                                if (window.isVisible()) {
+                                    window.hide(null);
+                                    window.getComponent().requestFocus();
+                                } else {
+                                    window.show(null);
+                                }
+                            }
+                        }
+                    }
+                }, java.awt.AWTEvent.KEY_EVENT_MASK);
+
         fundRefreshHandler = new TianTianFundHandler(table1, aLabel, bLabel);
         settings = ServiceManager.getService(LazyyHelperSettings.class);
         // 刷新间隔

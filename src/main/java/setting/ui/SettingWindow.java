@@ -30,6 +30,7 @@ public class SettingWindow {
     private JCheckBox hiddenHoldCheckBox;
     private JTextField newsCountField;
     private JTextField refreshTimeField;
+    private JCheckBox bossKeyCheckBox;
 
     protected LazyyHelperSettings settings;
     private AliasTable aliasTable;
@@ -65,6 +66,7 @@ public class SettingWindow {
         boolean hiddenMoney = this.settings.getGeneralSettings().isHiddenIncome();
         boolean hiddenFushi = this.settings.getGeneralSettings().isHiddenFushi();
         boolean hiddenHold = this.settings.getGeneralSettings().isHiddenHold();
+        boolean bossKey = this.settings.getGeneralSettings().isBossKey();
         autoRefreshCheckBox.setSelected(autoRefresh);
         this.refreshAction();
         timeComboBox.setSelectedItem(time);
@@ -74,6 +76,7 @@ public class SettingWindow {
         hiddenIncomeCheckBox.setSelected(hiddenMoney);
         hiddenFushiCheckBox.setSelected(hiddenFushi);
         hiddenHoldCheckBox.setSelected(hiddenHold);
+        bossKeyCheckBox.setSelected(bossKey);
         // 高级设置
         String openTime = this.settings.getAdvancedSettings().getOpenTime();
         String closeTime = this.settings.getAdvancedSettings().getCloseTime();
@@ -120,7 +123,8 @@ public class SettingWindow {
                 || data.isAutoRefresh() != autoRefreshCheckBox.isSelected()
                 || data.isHiddenIncome() != hiddenIncomeCheckBox.isSelected()
                 || data.isHiddenFushi() != hiddenFushiCheckBox.isSelected()
-                || data.isHiddenHold() != hiddenHoldCheckBox.isSelected()) {
+                || data.isHiddenHold() != hiddenHoldCheckBox.isSelected()
+                || data.isBossKey() != bossKeyCheckBox.isSelected()) {
             return true;
         }
         return false;
@@ -150,6 +154,7 @@ public class SettingWindow {
         settings.getGeneralSettings().setHiddenIncome(hiddenIncomeCheckBox.isSelected());
         settings.getGeneralSettings().setHiddenFushi(hiddenFushiCheckBox.isSelected());
         settings.getGeneralSettings().setHiddenHold(hiddenHoldCheckBox.isSelected());
+        settings.getGeneralSettings().setBossKey(bossKeyCheckBox.isSelected());
         return settings.getGeneralSettings();
     }
 

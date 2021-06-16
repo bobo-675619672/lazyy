@@ -20,4 +20,6 @@ public class GeneralSettings extends DomainObject {
 
     private boolean hiddenHold;
 
+    private boolean bossKey;
+
 }

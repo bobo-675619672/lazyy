@@ -111,6 +111,8 @@ public class LazyyHelperSettings implements PersistentStateComponent<LazyyHelper
         generalSettings.setHiddenIncome(true);
         generalSettings.setHiddenHold(true);
         generalSettings.setHiddenFushi(true);
+        // 目前不建议开启，没解决快捷键冲突问题
+        generalSettings.setBossKey(false);
     }
 
 }
