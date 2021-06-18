@@ -5,7 +5,7 @@ public class LazyyConstant {
     /**
      * 插件左下角显示
      */
-    public static final String LABEL_LOGO = "  Laz⚡⚡ V1.0.13";
+    public static final String LABEL_LOGO = "  Laz⚡⚡  ";
 
     /**
      * 看盘的指数代码

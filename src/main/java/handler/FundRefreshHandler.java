@@ -5,9 +5,7 @@ import com.intellij.openapi.components.ServiceManager;
 import com.intellij.ui.JBColor;
 import constant.LazyyConstant;
 import model.FundBean;
-import model.TypeAlias;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
 import storage.LazyyHelperSettings;
 import util.DateUtil;
 import util.StringUtil;
@@ -17,7 +15,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 
@@ -25,18 +22,20 @@ public abstract class FundRefreshHandler {
 
     private ArrayList<FundBean> data = new ArrayList<>();
     private JTable table;
-    private JLabel label1;
-    private JLabel label2;
+    private JLabel aLabel;
+    private JLabel bLabel;
+    private JComboBox codeComboBox;
 
     private int[] sizes = new int[]{80, 180, 80, 80, 80, 80, 80};
     private String[] columnNames = {"基金编码", "基金名称", "估算涨跌", "估算收益", "持有收益", "持有收益率", "更新时间"};
 
     private LazyyHelperSettings settings;
 
-    public FundRefreshHandler(JTable table, JLabel label1, JLabel label2) {
+    public FundRefreshHandler(JTable table, JComboBox codeComboBox, JLabel aLabel, JLabel bLabel) {
         this.table = table;
-        this.label1 = label1;
-        this.label2 = label2;
+        this.aLabel = aLabel;
+        this.bLabel = bLabel;
+        this.codeComboBox = codeComboBox;
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         // Fix tree row height
         FontMetrics metrics = table.getFontMetrics(table.getFont());
@@ -142,20 +141,20 @@ public abstract class FundRefreshHandler {
 
         String code2 = "↑";
         String code3 = "+";
-        label1.setForeground(JBColor.RED);
+        aLabel.setForeground(JBColor.RED);
         if (Double.valueOf(index3) < 0.0) {
-            label1.setForeground(JBColor.GREEN);
+            aLabel.setForeground(JBColor.GREEN);
             code2 = "↓";
             code3 = "-";
         }
         // 3317.98 (↑40.55 / +1.24%)
         String show = String.format("%s (%s%s / %s%s%%)", index1, code2, index2, code3, index3);
-        label1.setText(show);
+        aLabel.setText(show);
         // 当天已经结束
         if (canNowRefresh()) {
-            label2.setText(DateUtil.getCurDateFullStr());
+            bLabel.setText(DateUtil.getCurDateFullStr());
         } else {
-            label2.setText(DateUtil.getCurDateStr() + " " + settings.getAdvancedSettings().getCloseTime() + "(赌场关门)");
+            bLabel.setText(DateUtil.getCurDateStr() + " " + settings.getAdvancedSettings().getCloseTime() + "(赌场关门)");
         }
     }
 

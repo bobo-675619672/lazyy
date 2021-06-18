@@ -15,13 +15,11 @@ import util.LogUtil;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,6 +31,7 @@ public class LazyyWindow implements ToolWindowFactory {
     private JLabel aLabel;
     private JLabel bLabel;
     private JLabel logoLabel;
+    private JComboBox codeComboBox;
 
     private ShowWindow showWindow = new ShowWindow();
 
@@ -65,7 +64,7 @@ public class LazyyWindow implements ToolWindowFactory {
     public void init(ToolWindow window) {
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
-        // 注册应用程序全局键盘事件, 所有的键盘事件都会被此事件监听器处理.
+        // 注册应用程序全局键盘事件, 所有的键盘事件都会被此事件监听器处理
         toolkit.addAWTEventListener(
                 event -> {
                     if (event.getClass() == KeyEvent.class) {
@@ -89,25 +88,17 @@ public class LazyyWindow implements ToolWindowFactory {
                     }
                 }, java.awt.AWTEvent.KEY_EVENT_MASK);
 
-        fundRefreshHandler = new TianTianFundHandler(table1, aLabel, bLabel);
+        fundRefreshHandler = new TianTianFundHandler(table1, codeComboBox, aLabel, bLabel);
         settings = ServiceManager.getService(LazyyHelperSettings.class);
         // 刷新间隔
         refreshButton.addActionListener(a -> {
-            fundRefreshHandler.refresh();
-            // 设置倒计时
-            int refreshTime = Integer.valueOf(settings.getAdvancedSettings().getRefreshTime());
-            AtomicInteger time = new AtomicInteger(refreshTime);
-            ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
-            exec.scheduleAtFixedRate(() -> {
-                refreshButton.setEnabled(false);
-                refreshButton.setText("等待(" + time + "s)");
-                time.getAndDecrement();
-                if (time.intValue() < 0) {
-                    exec.shutdown();
-                    refreshButton.setEnabled(true);
-                    refreshButton.setText("刷新");
-                }
-            },0,1, TimeUnit.SECONDS);
+            this.refresh();
+        });
+        // 添加切换事件
+        codeComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                this.refresh();
+            }
         });
     }
 
@@ -119,6 +110,26 @@ public class LazyyWindow implements ToolWindowFactory {
     @Override
     public boolean isDoNotActivateOnStart() {
         return true;
+    }
+
+    private void refresh() {
+        fundRefreshHandler.refresh();
+        // 设置倒计时
+        int refreshTime = Integer.valueOf(settings.getAdvancedSettings().getRefreshTime());
+        AtomicInteger time = new AtomicInteger(refreshTime);
+        ScheduledExecutorService exec = new ScheduledThreadPoolExecutor(1);
+        exec.scheduleAtFixedRate(() -> {
+            codeComboBox.setEnabled(false);
+            refreshButton.setEnabled(false);
+            refreshButton.setText("等待(" + time + "s)");
+            time.getAndDecrement();
+            if (time.intValue() < 0) {
+                exec.shutdown();
+                codeComboBox.setEnabled(true);
+                refreshButton.setEnabled(true);
+                refreshButton.setText("刷新");
+            }
+        },0,1, TimeUnit.SECONDS);
     }
 
 }

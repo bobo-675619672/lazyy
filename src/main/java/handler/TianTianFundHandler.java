@@ -36,8 +36,11 @@ public class TianTianFundHandler extends FundRefreshHandler {
 
     private volatile boolean autoRunFlag;
 
-    public TianTianFundHandler(JTable table, JLabel label1, JLabel label2) {
-        super(table, label1, label2);
+    private JComboBox codeComboBox;
+
+    public TianTianFundHandler(JTable table, JComboBox codeComboBox, JLabel aLabel, JLabel bLabel) {
+        super(table, codeComboBox, aLabel, bLabel);
+        this.codeComboBox = codeComboBox;
         settings = ServiceManager.getService(LazyyHelperSettings.class);
     }
 
@@ -180,8 +183,14 @@ public class TianTianFundHandler extends FundRefreshHandler {
     private void updateSha() {
         commonThreadPool.execute(() -> {
             try {
+                int codeIndex = codeComboBox.getSelectedIndex();
+                if (codeIndex >= LazyyConstant.KKP_CODES.length) {
+                    LogUtil.info("数据异常,不刷新!");
+                    return;
+                }
+                String code = LazyyConstant.KKP_CODES[codeIndex];
                 // var hq_str_s_sh000001="上证指数,3317.9847,40.5445,1.24,1822997,25641104";
-                String result = HttpClientPool.getHttpClient().get("https://hq.sinajs.cn/list=s_sh000001");
+                String result = HttpClientPool.getHttpClient().get("https://hq.sinajs.cn/list=s_" + code);
                 // 上证指数,3317.9847,40.5445,1.24,1822997,25641104
                 result = result
                         .split("=", -1)[1]
